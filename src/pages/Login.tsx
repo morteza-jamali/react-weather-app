@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { styled, useColorScheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
+import { sxWithFaFont } from '../utils';
 
 const locales = [
   {
@@ -84,7 +85,7 @@ const LoginTitle = styled(Typography)(({ theme }) => [
 ]);
 
 export const Login = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { mode } = useColorScheme();
 
   return (
@@ -108,13 +109,22 @@ export const Login = () => {
             >
               <Stack spacing="200px">
                 <Stack spacing="32px" alignItems="center">
-                  <LoginTitle variant="h5">{t('login')}</LoginTitle>
+                  <LoginTitle variant="h5" sx={sxWithFaFont(i18n.language)}>
+                    {t('login')}
+                  </LoginTitle>
                   <OutlinedInput
-                    sx={{ width: '100%' }}
+                    sx={sxWithFaFont(i18n.language, {
+                      width: '100%',
+                    })}
                     placeholder={t('loginInputPlaceholder')}
                   />
                 </Stack>
-                <LoginButton variant="contained">{t('login')}</LoginButton>
+                <LoginButton
+                  variant="contained"
+                  sx={sxWithFaFont(i18n.language)}
+                >
+                  {t('login')}
+                </LoginButton>
               </Stack>
             </FormControl>
           </Box>
@@ -125,11 +135,16 @@ export const Login = () => {
           />
         </LoginCard>
         <FormControl sx={{ width: '220px' }}>
-          <InputLabel variant="standard" htmlFor="uncontrolled-native">
+          <InputLabel
+            variant="standard"
+            htmlFor="uncontrolled-native"
+            sx={sxWithFaFont(i18n.language)}
+          >
             {t('language')}
           </InputLabel>
           <NativeSelect
             defaultValue={30}
+            sx={sxWithFaFont(i18n.language)}
             inputProps={{
               name: 'language',
               id: 'uncontrolled-native',

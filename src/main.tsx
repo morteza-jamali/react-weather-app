@@ -6,6 +6,8 @@ import { Dashboard } from './pages/Dashboard';
 import { Login } from './pages/Login';
 import './i18n';
 
+import './global.css';
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
