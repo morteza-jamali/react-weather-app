@@ -7,6 +7,7 @@ import {
   Typography,
   OutlinedInput,
   Button,
+  useMediaQuery,
 } from '@mui/material';
 import { styled, useColorScheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
@@ -49,6 +50,11 @@ const Root = styled(Box)(({ theme }) => [
     position: 'fixed',
     inset: 0,
     backgroundColor: '#F3FAFE',
+    overflowY: 'auto',
+    padding: '50px',
+    '@media (max-width: 380px)': {
+      padding: '20px',
+    },
   },
   theme.applyStyles('dark', {
     backgroundColor: '#151D32',
@@ -59,6 +65,11 @@ const CloudsImg = styled('img')({
   borderTopRightRadius: '12px',
   borderBottomRightRadius: '12px',
   userSelect: 'none',
+  '@media (max-width: 1066px)': { width: '100%', objectFit: 'cover' },
+  '@media (max-width: 606px)': {
+    borderBottomRightRadius: 0,
+    borderTopLeftRadius: '12px',
+  },
 });
 
 const LoginCard = styled(Stack)(({ theme }) => [
@@ -87,18 +98,29 @@ const LoginTitle = styled(Typography)(({ theme }) => [
 export const Login = () => {
   const { t, i18n } = useTranslation();
   const { mode } = useColorScheme();
+  const mQ1066Match = useMediaQuery('(max-width: 1066px)');
+  const mQ606Match = useMediaQuery('(max-width: 606px)');
+  const mQ380Match = useMediaQuery('(max-width: 380px)');
+  const mQ260Match = useMediaQuery('(max-width: 260px)');
 
   return (
-    <Root>
-      <Stack alignItems="center" spacing="40px">
-        <LoginCard direction="row">
+    <Root sx={mQ606Match ? { display: 'block' } : null}>
+      <Stack
+        alignItems="center"
+        spacing="40px"
+        sx={mQ1066Match ? { width: '100%' } : null}
+      >
+        <LoginCard
+          direction={mQ606Match ? 'column-reverse' : 'row'}
+          sx={mQ1066Match ? { width: '100%' } : null}
+        >
           <Box
             flexGrow={1}
             sx={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '0 60px',
+              padding: mQ380Match ? '20px' : '60px',
             }}
           >
             <FormControl
@@ -134,7 +156,7 @@ export const Login = () => {
             draggable={false}
           />
         </LoginCard>
-        <FormControl sx={{ width: '220px' }}>
+        <FormControl sx={{ width: mQ260Match ? '100%' : '220px' }}>
           <InputLabel
             variant="standard"
             htmlFor="uncontrolled-native"
