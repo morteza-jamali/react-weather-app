@@ -5,13 +5,17 @@ import {
   Stack,
   Box,
   Typography,
-  OutlinedInput,
+  TextField,
   Button,
   useMediaQuery,
 } from '@mui/material';
 import { styled, useColorScheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import { sxWithFaFont } from '../utils';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { useLanguage, useUserInfo } from '../hooks';
+import { PageTitle } from '../components';
 
 const locales = [
   {
@@ -49,7 +53,7 @@ const Root = styled(Box)(({ theme }) => [
     justifyContent: 'center',
     position: 'fixed',
     inset: 0,
-    backgroundColor: '#F3FAFE',
+    backgroundColor: 'var(--light-bg)',
     overflowY: 'auto',
     padding: '50px',
     '@media (max-width: 380px)': {
@@ -57,7 +61,7 @@ const Root = styled(Box)(({ theme }) => [
     },
   },
   theme.applyStyles('dark', {
-    backgroundColor: '#151D32',
+    backgroundColor: 'var(--dark-bg)',
   }),
 ]);
 
@@ -96,15 +100,42 @@ const LoginTitle = styled(Typography)(({ theme }) => [
 ]);
 
 export const Login = () => {
+  let navigate = useNavigate();
+  const userInfo = useUserInfo();
+
+  useEffect(() => {
+    if (userInfo.isLogedIn) {
+      navigate('/');
+    }
+  }, [userInfo.isLogedIn]);
+
   const { t, i18n } = useTranslation();
   const { mode } = useColorScheme();
+  const [name, setName] = useState('');
+  const { changeLang } = useLanguage();
+  const [nameValidation, setNameValidation] = useState<string | null>(null);
   const mQ1066Match = useMediaQuery('(max-width: 1066px)');
   const mQ606Match = useMediaQuery('(max-width: 606px)');
   const mQ380Match = useMediaQuery('(max-width: 380px)');
   const mQ260Match = useMediaQuery('(max-width: 260px)');
 
-  return (
+  const loginHandler = () => {
+    const newName = name.trim();
+
+    setNameValidation(null);
+
+    if (newName.length === 0) {
+      setNameValidation(t('loginNameError'));
+      return;
+    }
+
+    userInfo.setName(newName);
+    navigate('/');
+  };
+
+  return !userInfo.isLogedIn ? (
     <Root sx={mQ606Match ? { display: 'block' } : null}>
+      <PageTitle title={t('login')} />
       <Stack
         alignItems="center"
         spacing="40px"
@@ -134,16 +165,29 @@ export const Login = () => {
                   <LoginTitle variant="h5" sx={sxWithFaFont(i18n.language)}>
                     {t('login')}
                   </LoginTitle>
-                  <OutlinedInput
-                    sx={sxWithFaFont(i18n.language, {
-                      width: '100%',
-                    })}
+                  <TextField
+                    variant="outlined"
+                    sx={sxWithFaFont(
+                      i18n.language,
+                      {
+                        width: '100%',
+                      },
+                      {
+                        '& .MuiFormHelperText-root, & .MuiInputBase-root': {
+                          fontFamily: 'IRANYekanX VF',
+                        },
+                      },
+                    )}
                     placeholder={t('loginInputPlaceholder')}
+                    onChange={(event) => setName(event.target.value)}
+                    error={nameValidation !== null}
+                    helperText={nameValidation}
                   />
                 </Stack>
                 <LoginButton
                   variant="contained"
                   sx={sxWithFaFont(i18n.language)}
+                  onClick={loginHandler}
                 >
                   {t('login')}
                 </LoginButton>
@@ -165,8 +209,9 @@ export const Login = () => {
             {t('language')}
           </InputLabel>
           <NativeSelect
-            defaultValue={30}
+            value={i18n.language}
             sx={sxWithFaFont(i18n.language)}
+            onChange={(event) => changeLang(event.target.value)}
             inputProps={{
               name: 'language',
               id: 'uncontrolled-native',
@@ -181,7 +226,7 @@ export const Login = () => {
         </FormControl>
       </Stack>
     </Root>
-  );
+  ) : null;
 };
 
 export default Login;

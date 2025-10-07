@@ -3,5 +3,8 @@
   "english": "انگلیسی",
   "persian": "فارسی",
   "login": "ورود",
-  "loginInputPlaceholder": "نام خود را وارد کنید"
+  "loginInputPlaceholder": "نام خود را وارد کنید",
+  "loginNameError": "نام صحیح نیست",
+  "appTitle": "برنامه هواشناسی",
+  "dashboard": "داشبورد"
 }

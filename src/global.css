@@ -5,3 +5,8 @@
   font-style: normal;
   font-display: swap;
 }
+
+:root {
+  --light-bg: #f3fafe;
+  --dark-bg: #151d32;
+}

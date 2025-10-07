@@ -3,5 +3,8 @@
   "english": "English",
   "persian": "Persian",
   "login": "Login",
-  "loginInputPlaceholder": "Enter Your Name"
+  "loginInputPlaceholder": "Enter Your Name",
+  "loginNameError": "Name is not valid",
+  "appTitle": "Weather App",
+  "dashboard": "Dashboard"
 }

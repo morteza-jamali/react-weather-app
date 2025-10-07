@@ -8,9 +8,10 @@ import createCache from '@emotion/cache';
 import { prefixer } from 'stylis';
 import rtlPlugin from '@mui/stylis-plugin-rtl';
 import { Outlet } from 'react-router';
-import { CssBaseline, GlobalStyles } from '@mui/material';
+import { CssBaseline } from '@mui/material';
 import SystemTheme from './SystemTheme';
 import { useTranslation } from 'react-i18next';
+import GlobalStyles from './GlobalStyles';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -39,22 +40,13 @@ export const AppLayout: React.FC = () => {
   useEffect(() => {
     setRtlDirection(i18n.dir() === 'rtl');
     document.documentElement.setAttribute('dir', i18n.dir());
-  }, [i18n]);
+  }, [i18n.language]);
 
   return (
     <CacheProvider value={rtlDirection ? rtlCache : ltrCache}>
       <ThemeProvider theme={theme} defaultMode={systemTheme} noSsr>
         <CssBaseline />
-        <GlobalStyles
-          styles={{
-            body: {
-              fontFamily:
-                i18n.language === 'fa'
-                  ? 'IRANYekanX VF'
-                  : '"Roboto","Helvetica","Arial",sans-serif',
-            },
-          }}
-        />
+        <GlobalStyles />
         <SystemTheme />
         <RTLDirectionContext value={[rtlDirection, setRtlDirection]}>
           <Outlet />
