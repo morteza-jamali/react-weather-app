@@ -5,6 +5,13 @@
   "login": "ورود",
   "loginInputPlaceholder": "نام خود را وارد کنید",
   "loginNameError": "نام صحیح نیست",
-  "appTitle": "برنامه هواشناسی",
-  "dashboard": "داشبورد"
+  "appTitle": "داشبورد آب و هوا",
+  "dashboard": "داشبورد",
+  "locationSearchSelect": "مکان مورد نظر را جستجو کنید",
+  "mode": "تم",
+  "light": "روشن",
+  "dark": "تاریک",
+  "en": "انگلیسی",
+  "fa": "فارسی",
+  "exit": "خروج"
 }

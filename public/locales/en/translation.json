@@ -5,6 +5,13 @@
   "login": "Login",
   "loginInputPlaceholder": "Enter Your Name",
   "loginNameError": "Name is not valid",
-  "appTitle": "Weather App",
-  "dashboard": "Dashboard"
+  "appTitle": "Weather Dashboard",
+  "dashboard": "Dashboard",
+  "locationSearchSelect": "Search Your Location",
+  "mode": "Mode",
+  "light": "Light",
+  "dark": "Dark",
+  "en": "En",
+  "fa": "Fa",
+  "exit": "Exit"
 }

@@ -11,6 +11,8 @@ export const useUserInfo = () => {
 
   const isLogedIn = name !== null && name.trim().length > 0;
 
+  const logout = () => localStorage.removeItem(Key);
+
   useEffect(() => {
     const checkLocalStorage = () => {
       setName(localStorage.getItem(Key));
@@ -23,7 +25,7 @@ export const useUserInfo = () => {
     };
   }, []);
 
-  return { name, isLogedIn, setName: setLocalStorage };
+  return { name, isLogedIn, setName: setLocalStorage, logout };
 };
 
 export default useUserInfo;
