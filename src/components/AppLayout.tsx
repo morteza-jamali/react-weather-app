@@ -1,5 +1,4 @@
 import { ThemeProvider, type Direction } from '@mui/material/styles';
-import { useSystemTheme } from '../hooks';
 import { CacheProvider } from '@emotion/react';
 import createTheme from '../theme';
 import { RTLDirectionContext } from '../contexts';
@@ -9,7 +8,6 @@ import { prefixer } from 'stylis';
 import rtlPlugin from '@mui/stylis-plugin-rtl';
 import { Outlet } from 'react-router';
 import { CssBaseline } from '@mui/material';
-import SystemTheme from './SystemTheme';
 import { useTranslation } from 'react-i18next';
 import GlobalStyles from './GlobalStyles';
 
@@ -27,11 +25,9 @@ const ltrCache = createCache({
   key: 'mui',
 });
 
-const direction: Direction = 'ltr';
-
 export const AppLayout: React.FC = () => {
   const { i18n } = useTranslation();
-  const systemTheme = useSystemTheme();
+  const direction: Direction = i18n.language === 'en' ? 'ltr' : 'rtl';
   const theme = createTheme({ direction });
   const [rtlDirection, setRtlDirection] = useState<boolean>(
     direction !== 'ltr',
@@ -44,10 +40,9 @@ export const AppLayout: React.FC = () => {
 
   return (
     <CacheProvider value={rtlDirection ? rtlCache : ltrCache}>
-      <ThemeProvider theme={theme} defaultMode={systemTheme} noSsr>
+      <ThemeProvider theme={theme} noSsr defaultMode="dark">
         <CssBaseline />
         <GlobalStyles />
-        <SystemTheme />
         <RTLDirectionContext value={[rtlDirection, setRtlDirection]}>
           <Outlet />
         </RTLDirectionContext>

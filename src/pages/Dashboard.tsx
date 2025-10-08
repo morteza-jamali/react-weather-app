@@ -1,17 +1,10 @@
 import { useNavigate } from 'react-router';
 import { useUserInfo } from '../hooks';
 import { Fragment, useEffect } from 'react';
-import { PageTitle, SettingsMenu } from '../components';
+import { PageTitle, SearchLocation, SettingsMenu } from '../components';
 import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material/styles';
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { sxWithFaFont } from '../utils';
 
 const Header = styled(Stack)(({ theme }) => [
@@ -38,23 +31,6 @@ const HeaderLogo = styled(Stack)({
     color: '#3D4852',
   },
 });
-
-const LocationForm = styled(FormControl)(({ theme }) => [
-  {
-    width: '295px',
-  },
-  theme.applyStyles('dark', {
-    '& fieldset': {
-      borderColor: '#757575',
-    },
-    '& label': {
-      color: '#B3B3B3',
-    },
-    '& .MuiSelect-iconOutlined': {
-      color: '#757575',
-    },
-  }),
-]);
 
 const AppTitle = styled(Typography)(({ theme }) => [
   theme.applyStyles('dark', { color: '#F3F4F7 !important' }),
@@ -86,26 +62,17 @@ export const Dashboard = () => {
             {t('appTitle')}
           </AppTitle>
         </HeaderLogo>
-        <Stack direction="row" spacing="20px" alignItems="center">
-          <LocationForm>
-            <InputLabel
-              id="location-select-label"
-              sx={sxWithFaFont(i18n.language)}
-            >
-              {t('locationSearchSelect')}
-            </InputLabel>
-            <Select
-              sx={sxWithFaFont(i18n.language, { height: '40px' })}
-              labelId="location-select-label"
-              id="location-select"
-              value={10}
-              label={t('locationSearchSelect')}
-            >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-          </LocationForm>
+        <Stack
+          direction="row"
+          spacing="20px"
+          alignItems="center"
+          sx={sxWithFaFont(i18n.language, null, {
+            '& .MuiAutocomplete-popper *': {
+              fontFamily: 'IRANYekanX VF',
+            },
+          })}
+        >
+          <SearchLocation />
           <SettingsMenu />
         </Stack>
       </Header>

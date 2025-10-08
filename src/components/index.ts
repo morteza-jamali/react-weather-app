@@ -1,6 +1,6 @@
 export * from './AppLayout';
 export * from './Link';
-export * from './SystemTheme';
 export * from './GlobalStyles';
 export * from './PageTitle';
 export * from './SettingsMenu';
+export * from './SearchLocation';
