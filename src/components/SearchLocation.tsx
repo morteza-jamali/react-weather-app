@@ -11,6 +11,7 @@ import { styled } from '@mui/material/styles';
 import { checkTextDir, sxWithFaFont, useCacheRequest } from '../utils';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { debounce } from '@mui/material/utils';
+import _ from 'lodash';
 
 export interface FetchCallbackProps {
   error?: any;
@@ -38,7 +39,7 @@ const fetch = debounce(
             longitude,
             country,
             admin1,
-            admin2,
+            ...(admin2 ? { admin2 } : {}),
           }),
         ),
       });
@@ -106,6 +107,7 @@ const defaultLocations: PlaceType[] = [
     latitude: 51.50853,
     longitude: -0.12574,
     admin1: 'England',
+    admin2: 'Greater London',
   },
   {
     country: 'United States',
@@ -127,6 +129,7 @@ const defaultLocations: PlaceType[] = [
     latitude: 48.85341,
     longitude: 2.3488,
     admin1: 'Île-de-France',
+    admin2: 'Paris',
   },
   {
     country: 'Italy',
@@ -134,6 +137,7 @@ const defaultLocations: PlaceType[] = [
     latitude: 41.89193,
     longitude: 12.51133,
     admin1: 'Lazio',
+    admin2: 'Rome',
   },
   {
     country: 'China',
@@ -141,6 +145,7 @@ const defaultLocations: PlaceType[] = [
     latitude: 39.9075,
     longitude: 116.39723,
     admin1: 'Beijing',
+    admin2: 'Beijing',
   },
   {
     country: 'Japan',
@@ -154,15 +159,23 @@ const defaultLocations: PlaceType[] = [
 export interface SearchItemProps extends React.HTMLAttributes<HTMLLIElement> {
   option: PlaceType;
   isRTL: boolean;
+  selected: boolean;
 }
 
 const SearchItem: React.FC<SearchItemProps> = ({
   option,
   isRTL,
+  selected,
   ...otherProps
 }) => {
   return (
-    <li {...otherProps} style={{ width: '100%' }}>
+    <li
+      {...otherProps}
+      style={{
+        width: '100%',
+        ...(selected ? { backgroundColor: '#90caf93d' } : {}),
+      }}
+    >
       <Stack dir={isRTL ? 'rtl' : 'ltr'} flexGrow={1}>
         <Typography sx={{ fontFamily: 'IRANYekanX VF' }}>
           {option.name}
@@ -194,15 +207,21 @@ export const SearchLocation: React.FC = () => {
   const { t, i18n } = useTranslation();
   const translatedDefLocations = useMemo(
     () =>
-      defaultLocations.map(({ admin1, country, name, ...other }) => ({
-        admin1: t(admin1),
-        country: t(country),
-        name: t(name),
+      defaultLocations.map(({ admin1, country, name, admin2, ...other }) => ({
+        admin1: t(`${admin1}_admin1`),
+        country: t(`${country}_country`),
+        name: t(`${name}_name`),
+        ...(admin2 ? { admin2: t(`${admin2}_admin2`) } : {}),
         ...other,
       })),
     [i18n.language],
   );
-  const [value, setValue] = useState<PlaceType | null>(null);
+  const [value, setValue] = useState<PlaceType | null>(
+    translatedDefLocations[0],
+  );
+  const [nonNullableValue, setNonNullableValue] = useState<PlaceType>(
+    translatedDefLocations[0],
+  );
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState<readonly PlaceType[]>(
     translatedDefLocations,
@@ -211,18 +230,57 @@ export const SearchLocation: React.FC = () => {
   const [noOptionsText, setNoOptionsText] = useState(t('noLocation'));
   const [eventsCount, setEventsCount] = useState(0);
   const [isRTL, setIsRTL] = useState(i18n.language === 'fa');
+  const [inputEvent, setInputEvent] = useState('');
+  const [optionsReseted, setOptionsReseted] = useState(true);
+
+  const returnDefaultOptions = () => {
+    setOptionsReseted(true);
+    setOptions(translatedDefLocations);
+    setIsRTL(i18n.language === 'fa');
+  };
+
+  useEffect(() => {
+    if (options.length !== 0 && optionsReseted) {
+      setOptions(translatedDefLocations);
+
+      if (
+        checkTextDir(value?.name!) !==
+        checkTextDir(translatedDefLocations[0].name)
+      ) {
+        setValue(
+          translatedDefLocations.filter(
+            ({ latitude, longitude }) =>
+              latitude === value?.latitude && longitude === value.longitude,
+          )[0],
+        );
+        setIsRTL(i18n.language === 'fa');
+      }
+    }
+  }, [translatedDefLocations]);
 
   useEffect(() => {
     if (inputValue === '') {
-      setIsRTL(i18n.language === 'fa');
       setLoading(false);
-      setOptions(translatedDefLocations);
+
+      if (options.length === 0) {
+        returnDefaultOptions();
+      }
+
+      return;
+    }
+
+    if (inputEvent === 'blur' && options.length === 0) {
+      setLoading(false);
+      returnDefaultOptions();
+
       return;
     }
 
     let active = true;
 
-    if (eventsCount === 1) {
+    if (eventsCount === 1 && inputEvent !== 'blur') {
+      setIsRTL(checkTextDir(inputValue));
+
       fetch(
         `https://geocoding-api.open-meteo.com/v1/search?name=${inputValue}&count=10&language=${isRTL ? 'fa' : 'en'}&format=json`,
         (props?: FetchCallbackProps) => {
@@ -249,6 +307,7 @@ export const SearchLocation: React.FC = () => {
             return;
           }
 
+          setOptionsReseted(false);
           setOptions(props.results);
         },
       );
@@ -259,7 +318,7 @@ export const SearchLocation: React.FC = () => {
     return () => {
       active = false;
     };
-  }, [inputValue, i18n.language]);
+  }, [inputValue]);
 
   return (
     <LocationAutocomplete
@@ -276,13 +335,14 @@ export const SearchLocation: React.FC = () => {
       filterOptions={(x) => x}
       onChange={(_, newValue) => {
         setEventsCount(2);
+        newValue && setNonNullableValue(newValue as any);
         setValue(newValue as any);
       }}
-      onInputChange={(_, newInputValue) => {
-        setIsRTL(checkTextDir(newInputValue));
+      onInputChange={(event, newInputValue) => {
+        setInputEvent(event?.type ?? 'blur');
         setEventsCount(1);
-        !loading && setLoading(true);
         setInputValue(newInputValue);
+        newInputValue !== '' && !loading && setLoading(true);
       }}
       renderInput={(params) => (
         <TextField
@@ -307,6 +367,7 @@ export const SearchLocation: React.FC = () => {
             key={`${option.latitude}-${option.longitude}`}
             {...props}
             option={option as PlaceType}
+            selected={_.isEqual(nonNullableValue, option)}
             {...{ isRTL }}
           />
         );
