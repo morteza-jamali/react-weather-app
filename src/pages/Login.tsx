@@ -95,7 +95,7 @@ const LoginTitle = styled(Typography)(({ theme }) => [
     color: '#050F24',
   },
   theme.applyStyles('dark', {
-    color: '#F3F4F7',
+    color: 'var(--text-color-2)',
   }),
 ]);
 

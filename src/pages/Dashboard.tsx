@@ -1,11 +1,18 @@
 import { useNavigate } from 'react-router';
-import { useUserInfo } from '../hooks';
-import { Fragment, useEffect } from 'react';
-import { PageTitle, SearchLocation, SettingsMenu } from '../components';
+import { useLocation, useUserInfo, type PlaceType } from '../hooks';
+import { Fragment, useEffect, useState } from 'react';
+import {
+  CurrentAndWeakly,
+  MonthlyTemp,
+  PageTitle,
+  SearchLocation,
+  SettingsMenu,
+} from '../components';
 import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material/styles';
-import { Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { sxWithFaFont } from '../utils';
+import { LocationContext } from '../contexts';
 
 const Header = styled(Stack)(({ theme }) => [
   {
@@ -28,16 +35,27 @@ const HeaderLogo = styled(Stack)({
     fontSize: '12px',
     lineHeight: '150%',
     letterSpacing: '0.15px',
-    color: '#3D4852',
+    color: 'var(--text-color-1)',
   },
 });
 
 const AppTitle = styled(Typography)(({ theme }) => [
-  theme.applyStyles('dark', { color: '#F3F4F7 !important' }),
+  theme.applyStyles('dark', { color: 'var(--text-color-2) !important' }),
 ]);
 
+const Main = styled(Box)({
+  padding: '28px',
+  display: 'grid',
+  gap: '28px',
+  gridTemplateColumns: '607px 1fr',
+  gridTemplateAreas: `
+    'currentWeather monthlyTemp'
+    '2weaksForecast 2weaksForecast'
+  `,
+});
+
 export const Dashboard = () => {
-  const { name, isLogedIn } = useUserInfo();
+  const { isLogedIn } = useUserInfo();
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -47,36 +65,43 @@ export const Dashboard = () => {
   }, [isLogedIn]);
 
   const { t, i18n } = useTranslation();
+  const { location } = useLocation();
+  const locationState = useState<PlaceType | null>(location);
 
   return isLogedIn ? (
     <Fragment>
-      <PageTitle title={t('dashboard')} />
-      <Header
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <HeaderLogo direction="row" alignItems="center" spacing="8px">
-          <img src="/favicon.png" alt="logo" draggable={false} />
-          <AppTitle variant="h6" sx={sxWithFaFont(i18n.language)}>
-            {t('appTitle')}
-          </AppTitle>
-        </HeaderLogo>
-        <Stack
+      <LocationContext value={locationState}>
+        <PageTitle title={t('dashboard')} />
+        <Header
           direction="row"
-          spacing="20px"
+          justifyContent="space-between"
           alignItems="center"
-          sx={sxWithFaFont(i18n.language, null, {
-            '& .MuiAutocomplete-popper *': {
-              fontFamily: 'IRANYekanX VF',
-            },
-          })}
         >
-          <SearchLocation />
-          <SettingsMenu />
-        </Stack>
-      </Header>
-      My name is = {name} && isLogedIn = {isLogedIn.toString()}
+          <HeaderLogo direction="row" alignItems="center" spacing="8px">
+            <img src="/favicon.png" alt="logo" draggable={false} />
+            <AppTitle variant="h6" sx={sxWithFaFont(i18n.language)}>
+              {t('appTitle')}
+            </AppTitle>
+          </HeaderLogo>
+          <Stack
+            direction="row"
+            spacing="20px"
+            alignItems="center"
+            sx={sxWithFaFont(i18n.language, null, {
+              '& .MuiAutocomplete-popper *': {
+                fontFamily: 'IRANYekanX VF',
+              },
+            })}
+          >
+            <SearchLocation />
+            <SettingsMenu />
+          </Stack>
+        </Header>
+        <Main>
+          <MonthlyTemp />
+          <CurrentAndWeakly />
+        </Main>
+      </LocationContext>
     </Fragment>
   ) : null;
 };

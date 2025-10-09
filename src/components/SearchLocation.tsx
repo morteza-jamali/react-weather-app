@@ -9,9 +9,11 @@ import type React from 'react';
 import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material/styles';
 import { checkTextDir, sxWithFaFont, useCacheRequest } from '../utils';
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useContext, useEffect, useMemo, useState } from 'react';
 import { debounce } from '@mui/material/utils';
 import _ from 'lodash';
+import { useLocation, type PlaceType } from '../hooks';
+import { LocationContext } from '../contexts';
 
 export interface FetchCallbackProps {
   error?: any;
@@ -69,15 +71,6 @@ const LocationAutocomplete = styled(Autocomplete)(({ theme }) => [
     },
   }),
 ]);
-
-export interface PlaceType {
-  country: string;
-  latitude: number;
-  longitude: number;
-  name: string;
-  admin1: string;
-  admin2?: string;
-}
 
 const defaultLocations: PlaceType[] = [
   {
@@ -204,6 +197,8 @@ const SearchItem: React.FC<SearchItemProps> = ({
 };
 
 export const SearchLocation: React.FC = () => {
+  const [location, setLocation] = useContext(LocationContext);
+  const { saveLocation } = useLocation();
   const { t, i18n } = useTranslation();
   const translatedDefLocations = useMemo(
     () =>
@@ -217,10 +212,10 @@ export const SearchLocation: React.FC = () => {
     [i18n.language],
   );
   const [value, setValue] = useState<PlaceType | null>(
-    translatedDefLocations[0],
+    location ?? translatedDefLocations[0],
   );
   const [nonNullableValue, setNonNullableValue] = useState<PlaceType>(
-    translatedDefLocations[0],
+    location ?? translatedDefLocations[0],
   );
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState<readonly PlaceType[]>(
@@ -232,6 +227,13 @@ export const SearchLocation: React.FC = () => {
   const [isRTL, setIsRTL] = useState(i18n.language === 'fa');
   const [inputEvent, setInputEvent] = useState('');
   const [optionsReseted, setOptionsReseted] = useState(true);
+
+  useEffect(() => {
+    if (!location) {
+      saveLocation(translatedDefLocations[0]);
+      setLocation(translatedDefLocations[0]);
+    }
+  }, []);
 
   const returnDefaultOptions = () => {
     setOptionsReseted(true);
@@ -335,7 +337,13 @@ export const SearchLocation: React.FC = () => {
       filterOptions={(x) => x}
       onChange={(_, newValue) => {
         setEventsCount(2);
-        newValue && setNonNullableValue(newValue as any);
+
+        if (newValue) {
+          setNonNullableValue(newValue as any);
+          saveLocation(newValue as any);
+          setLocation(newValue as any);
+        }
+
         setValue(newValue as any);
       }}
       onInputChange={(event, newInputValue) => {
