@@ -3,12 +3,15 @@ import type React from 'react';
 import { styled } from '@mui/material/styles';
 import { useContext } from 'react';
 import { CurrentWeaklyWeatherContext, LocationContext } from '../contexts';
+import { useDate } from '../utils';
+import { useTranslation } from 'react-i18next';
 
 const LocationRoot = styled(Stack)({
   width: '173px',
   height: '40px',
   borderRadius: '50px',
   backgroundColor: '#CDD9E0',
+  padding: '10px 13px',
   '& span': {
     fontWeight: 400,
     fontSize: '16px',
@@ -24,7 +27,7 @@ const Location: React.FC = () => {
     <LocationRoot
       direction="row"
       spacing="13px"
-      justifyContent="center"
+      justifyContent="start"
       alignItems="center"
     >
       <img src="/location_dark.svg" alt="location" width="15px" />
@@ -47,13 +50,24 @@ const DateTime = styled('span')({
   lineHeight: '16px',
 });
 
-const Date: React.FC = () => {
+const CurrentDate: React.FC = () => {
+  const data = useContext(CurrentWeaklyWeatherContext);
+  const { i18n } = useTranslation();
+  const { weekday, year, month, monthday, time, timeName } = useDate(
+    data?.current.time!,
+    i18n.language as any,
+  );
+
   return (
-    <Stack spacing="4px">
-      <TodayName>Monday</TodayName>
+    <Stack spacing="4px" justifyContent="center" alignItems="start">
+      <TodayName>{weekday}</TodayName>
       <Stack direction="row" spacing="20px">
-        <DateTime>24 Dec, 2023</DateTime>
-        <DateTime>11:45 AM</DateTime>
+        <DateTime>
+          {monthday} {month}, {year}
+        </DateTime>
+        <DateTime>
+          {time} {timeName}
+        </DateTime>
       </Stack>
     </Stack>
   );
@@ -69,10 +83,12 @@ const TemperatureText = styled('span')({
 const HighLow = styled(DateTime)({});
 
 const Temperature: React.FC = () => {
+  const data = useContext(CurrentWeaklyWeatherContext);
+
   return (
-    <Stack spacing="4px">
+    <Stack spacing="4px" justifyContent="center" alignItems="start">
       <Stack direction="row" spacing="5px">
-        <TemperatureText>26</TemperatureText>
+        <TemperatureText>{data?.current.temperature_2m}</TemperatureText>
         <img
           src="/circle_dark.svg"
           width="16px"
@@ -80,7 +96,10 @@ const Temperature: React.FC = () => {
         />
         <TemperatureText>C</TemperatureText>
       </Stack>
-      <HighLow>High: 27 Low: 10</HighLow>
+      <HighLow>
+        High: {data?.daily.temperature_2m_max[0]} Low:{' '}
+        {data?.daily.temperature_2m_min[0]}
+      </HighLow>
     </Stack>
   );
 };
@@ -114,14 +133,16 @@ export const CurrentWeather: React.FC = () => {
     <Card direction="row" justifyContent="space-between" alignItems="center">
       <Stack spacing="16px">
         <Location />
-        <Date />
+        <CurrentDate />
         <Temperature />
       </Stack>
       <Stack alignItems="end" justifyContent="center" spacing="10px">
         <img src="/some_cloud.png" alt="weather image" width="155px" />
         <Stack justifyContent="start" alignItems="center" spacing="8px">
           <StatusText>Cloudy</StatusText>
-          <FeelsLikeText>Feels Like 26</FeelsLikeText>
+          <FeelsLikeText>
+            Feels Like {data?.current.apparent_temperature}
+          </FeelsLikeText>
         </Stack>
       </Stack>
     </Card>
