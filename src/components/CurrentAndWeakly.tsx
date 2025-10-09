@@ -4,11 +4,25 @@ import WeatherSkeleten from './WeatherSkeleten';
 import CurrentWeather from './CurrentWeather';
 import { CurrentWeaklyWeatherContext } from '../contexts';
 import axios from 'axios';
+import WeaklyWeather from './WeaklyWeather';
+
+export interface WmoCodesType {
+  [key: number]: {
+    name: string;
+    image:
+      | string
+      | {
+          day: string;
+          night: string;
+        };
+  };
+}
 
 export interface CurrentWeaklyDataType {
   current: {
     apparent_temperature: number;
     temperature_2m: number;
+    is_day: 0 | 1;
     time: string;
     weather_code: number;
   };
@@ -30,6 +44,7 @@ const LazyLoad: React.FC<{ requestPromise: Promise<any> }> = ({
     <Fragment>
       <CurrentWeaklyWeatherContext value={data}>
         <CurrentWeather />
+        <WeaklyWeather />
       </CurrentWeaklyWeatherContext>
     </Fragment>
   );
@@ -57,7 +72,7 @@ const Loading: React.FC = () => {
 
 export const CurrentAndWeakly: React.FC = () => {
   const requestPromise = axios.get(
-    'https://api.open-meteo.com/v1/forecast?latitude=36.2133&longitude=58.7957&daily=temperature_2m_max,temperature_2m_min,weather_code&current=temperature_2m,apparent_temperature,weather_code&timezone=auto&forecast_days=14&',
+    'https://api.open-meteo.com/v1/forecast?latitude=36.2133&longitude=58.7957&daily=temperature_2m_mean,temperature_2m_max,temperature_2m_min,weather_code&current=is_day,temperature_2m,apparent_temperature,weather_code&timezone=auto&forecast_days=14',
   );
   // TODO: Remove following lines
   const newPromise = new Promise((resolve) =>

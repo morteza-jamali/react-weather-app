@@ -5,6 +5,8 @@ import { useContext } from 'react';
 import { CurrentWeaklyWeatherContext, LocationContext } from '../contexts';
 import { useDate } from '../utils';
 import { useTranslation } from 'react-i18next';
+import WmoCodes from '../wmo-codes.json';
+import type { WmoCodesType } from './CurrentAndWeakly';
 
 const LocationRoot = styled(Stack)({
   width: '173px',
@@ -106,9 +108,10 @@ const Temperature: React.FC = () => {
 
 const Card = styled(Stack)({
   backgroundColor: 'var(--bg-color-1)',
-  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.15)',
+  boxShadow: 'var(--box-shadow-1)',
   borderRadius: '24px',
   padding: '20px 24px',
+  gridArea: 'currentWeather',
 });
 
 const StatusText = styled('span')({
@@ -126,20 +129,39 @@ const FeelsLikeText = styled('span')({
 });
 
 export const CurrentWeather: React.FC = () => {
+  const { t } = useTranslation();
   const data = useContext(CurrentWeaklyWeatherContext);
-  console.log(data);
+  const weatherCodeData = (WmoCodes as WmoCodesType)[
+    data?.current.weather_code!
+  ];
+  const is_dayOrNight = data?.current.is_day === 0 ? 'night' : 'day';
+  const weatherStatusImg =
+    typeof weatherCodeData.image === 'string'
+      ? weatherCodeData.image
+      : weatherCodeData.image[is_dayOrNight];
 
   return (
-    <Card direction="row" justifyContent="space-between" alignItems="center">
+    <Card
+      direction="row"
+      justifyContent="space-between"
+      alignItems="center"
+      width={607}
+      height={234}
+    >
       <Stack spacing="16px">
         <Location />
         <CurrentDate />
         <Temperature />
       </Stack>
       <Stack alignItems="end" justifyContent="center" spacing="10px">
-        <img src="/some_cloud.png" alt="weather image" width="155px" />
-        <Stack justifyContent="start" alignItems="center" spacing="8px">
-          <StatusText>Cloudy</StatusText>
+        <img
+          src={`/wmo_images/${weatherStatusImg}`}
+          alt="weather image"
+          height="115px"
+          width="auto"
+        />
+        <Stack justifyContent="center" alignItems="start" spacing="8px">
+          <StatusText>{t(weatherCodeData.name)}</StatusText>
           <FeelsLikeText>
             Feels Like {data?.current.apparent_temperature}
           </FeelsLikeText>

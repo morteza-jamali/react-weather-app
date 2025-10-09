@@ -83,7 +83,7 @@ const LoginCard = styled(Stack)(({ theme }) => [
     backgroundColor: '#FFFFFF',
   },
   theme.applyStyles('dark', {
-    backgroundColor: '#292F45',
+    backgroundColor: 'var(--bg-color-1)',
   }),
 ]);
 

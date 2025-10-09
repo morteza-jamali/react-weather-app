@@ -3,7 +3,7 @@ import { Skeleton } from '@mui/material';
 
 export const WeatherSkeleten = styled(Skeleton)({
   borderRadius: '24px',
-  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.15)',
+  boxShadow: 'var(--box-shadow-1)',
 });
 
 export default WeatherSkeleten;

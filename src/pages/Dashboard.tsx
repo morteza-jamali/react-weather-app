@@ -18,7 +18,7 @@ const Header = styled(Stack)(({ theme }) => [
   {
     height: '80px',
     padding: '12px 24px',
-    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.15)',
+    boxShadow: 'var(--box-shadow-1)',
   },
   theme.applyStyles('dark', {
     boxShadow: '0px 4px 10px rgba(166, 165, 165, 0.15)',
