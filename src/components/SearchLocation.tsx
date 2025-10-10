@@ -58,6 +58,9 @@ const LocationAutocomplete = styled(Autocomplete)(({ theme }) => [
     '& .MuiAutocomplete-input': {
       fontFamily: 'IRANYekanX VF',
     },
+    '@media (max-width: 420px)': {
+      width: '100%',
+    },
   },
   theme.applyStyles('dark', {
     '& fieldset': {

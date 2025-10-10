@@ -110,15 +110,18 @@ const DayCard: React.FC<DayCardProps> = ({
   );
 };
 
+// FIXME: Space of Swipperjs changes when dashboard direction changes
+// FIXME: Swipperjs doesn't work corectly on small screens
 export const WeaklyWeather: React.FC = () => {
   const data = useContext(CurrentWeaklyWeatherContext);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
     <Card height={381} spacing="30px" justifyContent="center">
       <Title>{t('2 weeks Forecast')}</Title>
       <Stack direction="row" spacing="18px">
         <Swiper
+          dir={i18n.dir()}
           slidesPerView={11}
           spaceBetween="18px"
           grabCursor={true}

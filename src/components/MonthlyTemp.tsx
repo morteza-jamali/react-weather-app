@@ -1,14 +1,21 @@
 import type React from 'react';
 import WeatherSkeleten from './WeatherSkeleten';
-import { calMonthlyMeanTemp, type MonthlyMeanTempType } from '../utils';
+import {
+  calMonthlyMeanTemp,
+  sxWithFaFont,
+  type MonthlyMeanTempType,
+} from '../utils';
 import axios from 'axios';
-import { Suspense, use, useContext } from 'react';
+import { Suspense as ReactSuspense, use, useContext } from 'react';
 import { styled } from '@mui/material/styles';
 import { LocationContext } from '../contexts';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { useTranslation } from 'react-i18next';
 import { chartsGridClasses, ChartsText } from '@mui/x-charts';
-import { Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
+import ErrorBoundary from './ErrorBoundary';
+import { ErrorFallbackRoot } from './CurrentAndWeakly';
+import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 
 interface DataType {
   daily: MonthlyMeanTempType;
@@ -154,7 +161,7 @@ const Loading: React.FC = () => (
   />
 );
 
-export const MonthlyTemp: React.FC = () => {
+const Suspense: React.FC = () => {
   const [location, _] = useContext(LocationContext);
 
   if (!location) {
@@ -181,9 +188,38 @@ export const MonthlyTemp: React.FC = () => {
   );
 
   return (
-    <Suspense fallback={<Loading />}>
+    <ReactSuspense fallback={<Loading />}>
       <LazyLoad {...{ requestPromise }} />
-    </Suspense>
+    </ReactSuspense>
+  );
+};
+
+const ErrorFallback: React.FC = () => {
+  const { t, i18n } = useTranslation();
+
+  return (
+    <ErrorFallbackRoot
+      sx={{ gridArea: 'monthlyTemp' }}
+      height={234}
+      justifyContent="center"
+      alignItems="center"
+      direction="row"
+      spacing="10px"
+    >
+      <ErrorOutlineOutlinedIcon />
+      <Typography sx={sxWithFaFont(i18n.language)}>
+        {t('There is a problem')}
+      </Typography>
+    </ErrorFallbackRoot>
+  );
+};
+
+// FIXME: Data of X axis doesn't appear in small screens
+export const MonthlyTemp: React.FC = () => {
+  return (
+    <ErrorBoundary fallback={<ErrorFallback />}>
+      <Suspense />
+    </ErrorBoundary>
   );
 };
 

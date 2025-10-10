@@ -10,3 +10,4 @@ export * from './MonthlyTemp';
 export * from './CurrentWeather';
 export * from './WeaklyWeather';
 export * from './Footer';
+export * from './ErrorBoundary';

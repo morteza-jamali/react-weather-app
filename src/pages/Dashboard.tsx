@@ -11,7 +11,7 @@ import {
 } from '../components';
 import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material/styles';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography, useMediaQuery } from '@mui/material';
 import { sxWithFaFont } from '../utils';
 import { LocationContext } from '../contexts';
 
@@ -20,6 +20,11 @@ const Header = styled(Stack)(({ theme }) => [
     height: '80px',
     padding: '12px 24px',
     boxShadow: 'var(--box-shadow-1)',
+    '@media (max-width: 600px)': {
+      height: 'auto',
+      gap: '30px',
+      padding: '20px',
+    },
   },
   theme.applyStyles('dark', {
     boxShadow: '0px 4px 10px rgba(166, 165, 165, 0.15)',
@@ -53,9 +58,22 @@ const Main = styled(Box)({
     'currentWeather monthlyTemp'
     '2weaksForecast 2weaksForecast'
   `,
+  '@media (max-width: 1100px)': {
+    gridTemplateColumns: '1fr 1fr',
+  },
+  '@media (max-width: 900px)': {
+    gridTemplateColumns: '1fr',
+    columnGap: 0,
+    gridTemplateAreas: `
+    'currentWeather'
+    'monthlyTemp'
+    '2weaksForecast'
+  `,
+  },
 });
 
 export const Dashboard = () => {
+  const mQ600Match = useMediaQuery('(max-width: 600px)');
   const { isLogedIn } = useUserInfo();
   let navigate = useNavigate();
 
@@ -74,8 +92,8 @@ export const Dashboard = () => {
       <LocationContext value={locationState}>
         <PageTitle title={t('dashboard')} />
         <Header
-          direction="row"
-          justifyContent="space-between"
+          direction={mQ600Match ? 'column' : 'row'}
+          justifyContent={mQ600Match ? 'center' : 'space-between'}
           alignItems="center"
         >
           <HeaderLogo direction="row" alignItems="center" spacing="8px">
@@ -88,11 +106,19 @@ export const Dashboard = () => {
             direction="row"
             spacing="20px"
             alignItems="center"
-            sx={sxWithFaFont(i18n.language, null, {
-              '& .MuiAutocomplete-popper *': {
-                fontFamily: 'IRANYekanX VF',
+            sx={sxWithFaFont(
+              i18n.language,
+              {
+                '@media (max-width: 420px)': {
+                  alignSelf: 'stretch',
+                },
               },
-            })}
+              {
+                '& .MuiAutocomplete-popper *': {
+                  fontFamily: 'IRANYekanX VF',
+                },
+              },
+            )}
           >
             <SearchLocation />
             <SettingsMenu />

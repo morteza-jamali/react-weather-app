@@ -1,6 +1,6 @@
 import type React from 'react';
 import { styled } from '@mui/material/styles';
-import { Stack, Typography } from '@mui/material';
+import { Stack, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
@@ -14,6 +14,11 @@ const RootStack = styled(Stack)(({ theme }) => [
     marginTop: '50px',
     background:
       'linear-gradient(90deg, var(--light-bg) 0%, rgba(204, 221, 221, 0.619608) 51%, var(--light-bg) 100%)',
+    '@media (max-width: 554px)': {
+      height: 'auto',
+      paddingTop: '28px',
+      paddingBottom: '28px',
+    },
   },
   theme.applyStyles('dark', {
     background:
@@ -36,7 +41,7 @@ const textStyles = {
 const Info = styled(Stack)(({ theme }) => [
   {
     color: 'var(--text-color-3)',
-    '& span': textStyles.light,
+    '& span': { ...textStyles.light, textWrap: 'nowrap' },
   },
   theme.applyStyles('dark', {
     color: textStyles.dark.color,
@@ -50,6 +55,8 @@ const CopyRight = styled(Typography)(({ theme }) => [
 ]);
 
 export const Footer: React.FC = () => {
+  const mQ870Match = useMediaQuery('(max-width: 870px)');
+  const mQ554Match = useMediaQuery('(max-width: 554px)');
   const { t, i18n } = useTranslation();
   const getDate = () => useDate(new Date(), i18n.language as any, 'long');
   const [{ time, weekday, monthday, month, year }, setDate] =
@@ -65,9 +72,10 @@ export const Footer: React.FC = () => {
 
   return (
     <RootStack
-      direction="row"
+      direction={mQ554Match ? 'column' : 'row'}
       alignItems="center"
-      justifyContent="space-between"
+      justifyContent={mQ554Match ? 'center' : 'space-between'}
+      spacing="50px"
     >
       <Stack
         spacing="12px"
@@ -79,10 +87,10 @@ export const Footer: React.FC = () => {
         <CopyRight sx={sxWithFaFont(i18n.language)}>{t('copyright')}</CopyRight>
       </Stack>
       <Stack
-        direction="row"
-        alignItems="center"
+        direction={mQ870Match ? 'column' : 'row'}
+        alignItems={mQ870Match ? 'start' : 'center'}
         justifyContent="center"
-        spacing="40px"
+        spacing={mQ870Match ? '10px' : '40px'}
       >
         <Info
           direction="row"

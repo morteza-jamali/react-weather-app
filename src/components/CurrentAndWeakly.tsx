@@ -1,10 +1,16 @@
 import type React from 'react';
-import { Fragment, Suspense, use, useContext } from 'react';
+import { Fragment, Suspense as ReactSuspense, use, useContext } from 'react';
 import WeatherSkeleten from './WeatherSkeleten';
 import CurrentWeather from './CurrentWeather';
 import { CurrentWeaklyWeatherContext, LocationContext } from '../contexts';
 import axios from 'axios';
 import WeaklyWeather from './WeaklyWeather';
+import ErrorBoundary from './ErrorBoundary';
+import { styled } from '@mui/material/styles';
+import { Stack, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
+import { sxWithFaFont } from '../utils';
 
 export interface WmoCodesType {
   [key: number]: {
@@ -56,8 +62,13 @@ const Loading: React.FC = () => {
       <WeatherSkeleten
         variant="rounded"
         animation="wave"
-        sx={{ gridArea: 'currentWeather' }}
-        width={607}
+        sx={{
+          gridArea: 'currentWeather',
+          width: '607px',
+          '@media (max-width: 1100px)': {
+            width: 'auto',
+          },
+        }}
         height={234}
       />
       <WeatherSkeleten
@@ -70,7 +81,59 @@ const Loading: React.FC = () => {
   );
 };
 
-export const CurrentAndWeakly: React.FC = () => {
+export const ErrorFallbackRoot = styled(Stack)(({ theme }) => [
+  {
+    backgroundColor: 'var(--bg-color-2)',
+    boxShadow: 'var(--box-shadow-1)',
+    borderRadius: '24px',
+  },
+  theme.applyStyles('dark', {
+    backgroundColor: 'var(--bg-color-1)',
+  }),
+]);
+
+const ErrorFallback: React.FC = () => {
+  const { t, i18n } = useTranslation();
+
+  return (
+    <Fragment>
+      <ErrorFallbackRoot
+        sx={{
+          gridArea: 'currentWeather',
+          width: '607px',
+          '@media (max-width: 1100px)': {
+            width: 'auto',
+          },
+        }}
+        height={234}
+        justifyContent="center"
+        alignItems="center"
+        direction="row"
+        spacing="10px"
+      >
+        <ErrorOutlineOutlinedIcon />
+        <Typography sx={sxWithFaFont(i18n.language)}>
+          {t('There is a problem')}
+        </Typography>
+      </ErrorFallbackRoot>
+      <ErrorFallbackRoot
+        sx={{ gridArea: '2weaksForecast', gridColumn: '1 / 2 span' }}
+        height={381}
+        justifyContent="center"
+        alignItems="center"
+        direction="row"
+        spacing="10px"
+      >
+        <ErrorOutlineOutlinedIcon />
+        <Typography sx={sxWithFaFont(i18n.language)}>
+          {t('There is a problem')}
+        </Typography>
+      </ErrorFallbackRoot>
+    </Fragment>
+  );
+};
+
+const Suspense: React.FC = () => {
   const [location, _] = useContext(LocationContext);
 
   if (!location) {
@@ -82,9 +145,17 @@ export const CurrentAndWeakly: React.FC = () => {
   );
 
   return (
-    <Suspense fallback={<Loading />}>
+    <ReactSuspense fallback={<Loading />}>
       <LazyLoad {...{ requestPromise }} />
-    </Suspense>
+    </ReactSuspense>
+  );
+};
+
+export const CurrentAndWeakly: React.FC = () => {
+  return (
+    <ErrorBoundary fallback={<ErrorFallback />}>
+      <Suspense />
+    </ErrorBoundary>
   );
 };
 

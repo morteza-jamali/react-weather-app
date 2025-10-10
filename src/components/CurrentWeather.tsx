@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Stack, useMediaQuery } from '@mui/material';
 import type React from 'react';
 import { styled } from '@mui/material/styles';
 import { useContext } from 'react';
@@ -23,6 +23,7 @@ const LocationRoot = styled(Stack)({
 const Location: React.FC = () => {
   const [location, _] = useContext(LocationContext);
   const textDirection = checkTextDir(location?.name!);
+  const mQ420Match = useMediaQuery('(max-width: 420px)');
 
   return (
     <LocationRoot
@@ -30,7 +31,7 @@ const Location: React.FC = () => {
       spacing="13px"
       justifyContent="start"
       alignItems="center"
-      alignSelf="start"
+      alignSelf={mQ420Match ? 'center' : 'start'}
     >
       <img src="/location_dark.svg" alt="location" height="20px" width="auto" />
       <span style={textDirection ? { fontFamily: 'IRANYekanX VF' } : {}}>
@@ -65,6 +66,7 @@ const DateTime = styled('span')(({ theme }) => [
 ]);
 
 const CurrentDate: React.FC = () => {
+  const mQ420Match = useMediaQuery('(max-width: 420px)');
   const data = useContext(CurrentWeaklyWeatherContext);
   const { i18n } = useTranslation();
   const { weekday, year, month, monthday, time, timeName } = useDate(
@@ -73,7 +75,11 @@ const CurrentDate: React.FC = () => {
   );
 
   return (
-    <Stack spacing="4px" justifyContent="center" alignItems="start">
+    <Stack
+      spacing="4px"
+      justifyContent="center"
+      alignItems={mQ420Match ? 'center' : 'start'}
+    >
       <TodayName>{weekday}</TodayName>
       <Stack direction="row" spacing="20px">
         {i18n.language === 'en' ? (
@@ -115,11 +121,16 @@ const TemperatureText = styled('span')(({ theme }) => [
 const HighLow = styled(DateTime)({});
 
 const Temperature: React.FC = () => {
+  const mQ420Match = useMediaQuery('(max-width: 420px)');
   const data = useContext(CurrentWeaklyWeatherContext);
   const { t } = useTranslation();
 
   return (
-    <Stack spacing="4px" justifyContent="center" alignItems="start">
+    <Stack
+      spacing="4px"
+      justifyContent="center"
+      alignItems={mQ420Match ? 'center' : 'start'}
+    >
       <Stack direction="row" sx={{ gap: '5px' }} dir="ltr">
         <TemperatureText>{data?.current.temperature_2m}</TemperatureText>
         <img
@@ -147,7 +158,11 @@ const Card = styled(Stack)(({ theme }) => [
     boxShadow: 'var(--box-shadow-1)',
     borderRadius: '24px',
     padding: '20px 24px',
+    width: '607px',
     gridArea: 'currentWeather',
+    '@media (max-width: 1100px)': {
+      width: 'auto',
+    },
   },
   theme.applyStyles('dark', {
     backgroundColor: 'var(--bg-color-1)',
@@ -179,6 +194,7 @@ const FeelsLikeText = styled('span')(({ theme }) => [
 ]);
 
 export const CurrentWeather: React.FC = () => {
+  const mQ420Match = useMediaQuery('(max-width: 420px)');
   const { t, i18n } = useTranslation();
   const data = useContext(CurrentWeaklyWeatherContext);
   const weatherCodeData = (WmoCodes as WmoCodesType)[
@@ -192,25 +208,39 @@ export const CurrentWeather: React.FC = () => {
 
   return (
     <Card
-      direction="row"
+      direction={mQ420Match ? 'column' : 'row'}
       justifyContent="space-between"
       alignItems="center"
-      width={607}
-      height={234}
+      sx={{
+        height: mQ420Match ? 'auto' : '234px',
+        gap: mQ420Match ? '50px' : 0,
+      }}
     >
-      <Stack spacing="16px" justifyContent="center">
+      <Stack
+        spacing="16px"
+        justifyContent="center"
+        {...(mQ420Match ? { alignItems: 'center' } : {})}
+      >
         <Location />
         <CurrentDate />
         <Temperature />
       </Stack>
-      <Stack alignItems="end" justifyContent="center" spacing="10px">
+      <Stack
+        alignItems={mQ420Match ? 'center' : 'end'}
+        justifyContent="center"
+        spacing="10px"
+      >
         <img
           src={`/wmo_images/${weatherStatusImg}`}
           alt="weather image"
           height="115px"
           width="auto"
         />
-        <Stack justifyContent="center" alignItems="start" spacing="8px">
+        <Stack
+          justifyContent="center"
+          alignItems={mQ420Match ? 'center' : 'start'}
+          spacing="8px"
+        >
           <StatusText>{t(weatherCodeData.name)}</StatusText>
           {i18n.language === 'en' ? (
             <FeelsLikeText>
