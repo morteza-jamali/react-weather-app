@@ -9,3 +9,4 @@ export * from './WeatherSkeleten';
 export * from './MonthlyTemp';
 export * from './CurrentWeather';
 export * from './WeaklyWeather';
+export * from './Footer';

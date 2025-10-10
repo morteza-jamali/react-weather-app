@@ -3,16 +3,14 @@ import type React from 'react';
 import { styled } from '@mui/material/styles';
 import { useContext } from 'react';
 import { CurrentWeaklyWeatherContext, LocationContext } from '../contexts';
-import { useDate } from '../utils';
+import { checkTextDir, useDate } from '../utils';
 import { useTranslation } from 'react-i18next';
 import WmoCodes from '../wmo-codes.json';
 import type { WmoCodesType } from './CurrentAndWeakly';
 
 const LocationRoot = styled(Stack)({
-  width: '173px',
-  height: '40px',
   borderRadius: '50px',
-  backgroundColor: '#CDD9E0',
+  backgroundColor: 'var(--bg-color-3)',
   padding: '10px 13px',
   '& span': {
     fontWeight: 400,
@@ -24,6 +22,7 @@ const LocationRoot = styled(Stack)({
 
 const Location: React.FC = () => {
   const [location, _] = useContext(LocationContext);
+  const textDirection = checkTextDir(location?.name!);
 
   return (
     <LocationRoot
@@ -31,26 +30,39 @@ const Location: React.FC = () => {
       spacing="13px"
       justifyContent="start"
       alignItems="center"
+      alignSelf="start"
     >
-      <img src="/location_dark.svg" alt="location" width="15px" />
-      <span>{location?.name}</span>
+      <img src="/location_dark.svg" alt="location" height="20px" width="auto" />
+      <span style={textDirection ? { fontFamily: 'IRANYekanX VF' } : {}}>
+        {location?.name}
+      </span>
     </LocationRoot>
   );
 };
 
-const TodayName = styled('span')({
-  color: 'var(--text-color-2)',
-  fontWeight: 500,
-  fontSize: '32px',
-  lineHeight: '38px',
-});
+const TodayName = styled('span')(({ theme }) => [
+  {
+    color: 'var(--text-color-3)',
+    fontWeight: 500,
+    fontSize: '32px',
+    lineHeight: '38px',
+  },
+  theme.applyStyles('dark', {
+    color: 'var(--text-color-2)',
+  }),
+]);
 
-const DateTime = styled('span')({
-  color: 'var(--text-color-2)',
-  fontWeight: 400,
-  fontSize: '14px',
-  lineHeight: '16px',
-});
+const DateTime = styled('span')(({ theme }) => [
+  {
+    color: 'var(--text-color-3)',
+    fontWeight: 400,
+    fontSize: '14px',
+    lineHeight: '16px',
+  },
+  theme.applyStyles('dark', {
+    color: 'var(--text-color-2)',
+  }),
+]);
 
 const CurrentDate: React.FC = () => {
   const data = useContext(CurrentWeaklyWeatherContext);
@@ -64,32 +76,51 @@ const CurrentDate: React.FC = () => {
     <Stack spacing="4px" justifyContent="center" alignItems="start">
       <TodayName>{weekday}</TodayName>
       <Stack direction="row" spacing="20px">
-        <DateTime>
-          {monthday} {month}, {year}
-        </DateTime>
-        <DateTime>
-          {time} {timeName}
-        </DateTime>
+        {i18n.language === 'en' ? (
+          <>
+            <DateTime>
+              {monthday} {month}, {year}
+            </DateTime>
+            <DateTime>
+              {time} {timeName}
+            </DateTime>
+          </>
+        ) : (
+          <>
+            <DateTime>
+              {time} {timeName}
+            </DateTime>
+            <DateTime>
+              {monthday} {month}, {year}
+            </DateTime>
+          </>
+        )}
       </Stack>
     </Stack>
   );
 };
 
-const TemperatureText = styled('span')({
-  color: 'var(--text-color-2)',
-  fontWeight: 500,
-  fontSize: '40px',
-  lineHeight: '47px',
-});
+const TemperatureText = styled('span')(({ theme }) => [
+  {
+    color: 'var(--text-color-3)',
+    fontWeight: 500,
+    fontSize: '40px',
+    lineHeight: '47px',
+  },
+  theme.applyStyles('dark', {
+    color: 'var(--text-color-2)',
+  }),
+]);
 
 const HighLow = styled(DateTime)({});
 
 const Temperature: React.FC = () => {
   const data = useContext(CurrentWeaklyWeatherContext);
+  const { t } = useTranslation();
 
   return (
     <Stack spacing="4px" justifyContent="center" alignItems="start">
-      <Stack direction="row" spacing="5px">
+      <Stack direction="row" sx={{ gap: '5px' }} dir="ltr">
         <TemperatureText>{data?.current.temperature_2m}</TemperatureText>
         <img
           src="/circle_dark.svg"
@@ -98,38 +129,57 @@ const Temperature: React.FC = () => {
         />
         <TemperatureText>C</TemperatureText>
       </Stack>
-      <HighLow>
-        High: {data?.daily.temperature_2m_max[0]} Low:{' '}
-        {data?.daily.temperature_2m_min[0]}
-      </HighLow>
+      <Stack direction="row" spacing="15px" alignItems="center">
+        <HighLow>
+          {t('High')}: {data?.daily.temperature_2m_max[0]}
+        </HighLow>
+        <HighLow>
+          {t('Low')}: {data?.daily.temperature_2m_min[0]}
+        </HighLow>
+      </Stack>
     </Stack>
   );
 };
 
-const Card = styled(Stack)({
-  backgroundColor: 'var(--bg-color-1)',
-  boxShadow: 'var(--box-shadow-1)',
-  borderRadius: '24px',
-  padding: '20px 24px',
-  gridArea: 'currentWeather',
-});
+const Card = styled(Stack)(({ theme }) => [
+  {
+    backgroundColor: 'var(--bg-color-2)',
+    boxShadow: 'var(--box-shadow-1)',
+    borderRadius: '24px',
+    padding: '20px 24px',
+    gridArea: 'currentWeather',
+  },
+  theme.applyStyles('dark', {
+    backgroundColor: 'var(--bg-color-1)',
+  }),
+]);
 
-const StatusText = styled('span')({
-  fontWeight: 400,
-  fontSize: '32px',
-  lineHeight: '39px',
-  color: 'var(--text-color-2)',
-});
+const StatusText = styled('span')(({ theme }) => [
+  {
+    fontWeight: 400,
+    fontSize: '32px',
+    lineHeight: '39px',
+    color: 'var(--text-color-3)',
+  },
+  theme.applyStyles('dark', {
+    color: 'var(--text-color-2)',
+  }),
+]);
 
-const FeelsLikeText = styled('span')({
-  color: 'var(--text-color-2)',
-  fontWeight: 400,
-  fontSize: '16px',
-  lineHeight: '19px',
-});
+const FeelsLikeText = styled('span')(({ theme }) => [
+  {
+    color: 'var(--text-color-3)',
+    fontWeight: 400,
+    fontSize: '16px',
+    lineHeight: '19px',
+  },
+  theme.applyStyles('dark', {
+    color: 'var(--text-color-2)',
+  }),
+]);
 
 export const CurrentWeather: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const data = useContext(CurrentWeaklyWeatherContext);
   const weatherCodeData = (WmoCodes as WmoCodesType)[
     data?.current.weather_code!
@@ -148,7 +198,7 @@ export const CurrentWeather: React.FC = () => {
       width={607}
       height={234}
     >
-      <Stack spacing="16px">
+      <Stack spacing="16px" justifyContent="center">
         <Location />
         <CurrentDate />
         <Temperature />
@@ -162,9 +212,15 @@ export const CurrentWeather: React.FC = () => {
         />
         <Stack justifyContent="center" alignItems="start" spacing="8px">
           <StatusText>{t(weatherCodeData.name)}</StatusText>
-          <FeelsLikeText>
-            Feels Like {data?.current.apparent_temperature}
-          </FeelsLikeText>
+          {i18n.language === 'en' ? (
+            <FeelsLikeText>
+              {t('Feels Like')} {data?.current.apparent_temperature}
+            </FeelsLikeText>
+          ) : (
+            <FeelsLikeText>
+              {data?.current.apparent_temperature} {t('Feels Like')}
+            </FeelsLikeText>
+          )}
         </Stack>
       </Stack>
     </Card>

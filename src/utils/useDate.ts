@@ -1,5 +1,9 @@
-export const useDate = (date: string, lang: 'en' | 'fa' = 'en') => {
-  const object = new Date(date);
+export const useDate = (
+  date: string | Date,
+  lang: 'en' | 'fa' = 'en',
+  monthLong: 'short' | 'long' = 'short',
+) => {
+  const object = typeof date === 'string' ? new Date(date) : date;
   const locale = lang === 'en' ? 'en-US' : 'fa-IR-u-nu-latn';
   const weekday = new Intl.DateTimeFormat(locale, {
     weekday: 'long',
@@ -7,7 +11,7 @@ export const useDate = (date: string, lang: 'en' | 'fa' = 'en') => {
   const monthday = new Intl.DateTimeFormat(locale, {
     day: 'numeric',
   }).format(object);
-  const month = new Intl.DateTimeFormat(locale, { month: 'short' }).format(
+  const month = new Intl.DateTimeFormat(locale, { month: monthLong }).format(
     object,
   );
   const year = new Intl.DateTimeFormat(locale, { year: 'numeric' }).format(

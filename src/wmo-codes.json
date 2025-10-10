@@ -114,10 +114,10 @@
   },
   "96": {
     "name": "Hailstorm",
-    "image": "thunderstorm.svg"
+    "image": "hailstorm.png"
   },
   "99": {
     "name": "Heavy Hailstorm",
-    "image": "thunderstorm.svg"
+    "image": "hailstorm.png"
   }
 }

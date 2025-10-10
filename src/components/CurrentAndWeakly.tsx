@@ -1,8 +1,8 @@
 import type React from 'react';
-import { Fragment, Suspense, use } from 'react';
+import { Fragment, Suspense, use, useContext } from 'react';
 import WeatherSkeleten from './WeatherSkeleten';
 import CurrentWeather from './CurrentWeather';
-import { CurrentWeaklyWeatherContext } from '../contexts';
+import { CurrentWeaklyWeatherContext, LocationContext } from '../contexts';
 import axios from 'axios';
 import WeaklyWeather from './WeaklyWeather';
 
@@ -71,16 +71,19 @@ const Loading: React.FC = () => {
 };
 
 export const CurrentAndWeakly: React.FC = () => {
+  const [location, _] = useContext(LocationContext);
+
+  if (!location) {
+    return null;
+  }
+
   const requestPromise = axios.get(
-    'https://api.open-meteo.com/v1/forecast?latitude=36.2133&longitude=58.7957&daily=temperature_2m_mean,temperature_2m_max,temperature_2m_min,weather_code&current=is_day,temperature_2m,apparent_temperature,weather_code&timezone=auto&forecast_days=14',
+    `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&daily=temperature_2m_mean,temperature_2m_max,temperature_2m_min,weather_code&current=is_day,temperature_2m,apparent_temperature,weather_code&timezone=auto&forecast_days=14`,
   );
-  // TODO: Remove following lines
-  const newPromise = new Promise((resolve) =>
-    setTimeout(() => requestPromise.then((response) => resolve(response)), 0),
-  );
+
   return (
     <Suspense fallback={<Loading />}>
-      <LazyLoad requestPromise={newPromise} />
+      <LazyLoad {...{ requestPromise }} />
     </Suspense>
   );
 };

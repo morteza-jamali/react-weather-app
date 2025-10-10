@@ -3,6 +3,7 @@ import { useLocation, useUserInfo, type PlaceType } from '../hooks';
 import { Fragment, useEffect, useState } from 'react';
 import {
   CurrentAndWeakly,
+  Footer,
   MonthlyTemp,
   PageTitle,
   SearchLocation,
@@ -101,6 +102,7 @@ export const Dashboard = () => {
           <MonthlyTemp />
           <CurrentAndWeakly />
         </Main>
+        <Footer />
       </LocationContext>
     </Fragment>
   ) : null;

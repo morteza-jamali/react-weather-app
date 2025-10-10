@@ -11,46 +11,71 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 import 'swiper/css';
 
-const Card = styled(Stack)({
-  backgroundColor: 'var(--bg-color-1)',
-  boxShadow: 'var(--box-shadow-1)',
-  borderRadius: '24px',
-  gridArea: '2weaksForecast',
-  gridColumn: '1 / 2 span',
-  paddingInlineStart: '25px',
-});
+const Card = styled(Stack)(({ theme }) => [
+  {
+    backgroundColor: 'var(--bg-color-2)',
+    boxShadow: 'var(--box-shadow-1)',
+    borderRadius: '24px',
+    gridArea: '2weaksForecast',
+    gridColumn: '1 / 2 span',
+    paddingInlineStart: '25px',
+  },
+  theme.applyStyles('dark', {
+    backgroundColor: 'var(--bg-color-1)',
+  }),
+]);
 
-const Title = styled('span')({
-  fontWeight: 600,
-  fontSize: '24px',
-  lineHeight: '29px',
-  color: 'var(--text-color-2)',
-});
+const Title = styled('span')(({ theme }) => [
+  {
+    fontWeight: 600,
+    fontSize: '24px',
+    lineHeight: '29px',
+    color: 'var(--text-color-3)',
+  },
+  theme.applyStyles('dark', {
+    color: 'var(--text-color-2)',
+  }),
+]);
 
-const DayCardRoot = styled(Stack)({
-  width: '104px',
-  height: '266px',
-  backgroundColor: '#3F4861',
-  borderRadius: '24px',
-});
+const DayCardRoot = styled(Stack)(({ theme }) => [
+  {
+    width: '104px',
+    height: '266px',
+    backgroundColor: 'var(--bg-color-3)',
+    borderRadius: '24px',
+  },
+  theme.applyStyles('dark', {
+    backgroundColor: 'var(--bg-color-4)',
+  }),
+]);
 
 const Slide = styled(SwiperSlide)({
   width: '104px !important',
 });
 
-const DayName = styled('span')({
-  fontWeight: 500,
-  fontSize: '14px',
-  lineHeight: '17px',
-  color: 'var(--text-color-2)',
-});
+const DayName = styled('span')(({ theme }) => [
+  {
+    fontWeight: 500,
+    fontSize: '14px',
+    lineHeight: '17px',
+    color: 'var(--text-color-3)',
+  },
+  theme.applyStyles('dark', {
+    color: 'var(--text-color-2)',
+  }),
+]);
 
-const Temperature = styled('span')({
-  fontWeight: 500,
-  fontSize: '18px',
-  lineHeight: '22px',
-  color: 'var(--text-color-2)',
-});
+const Temperature = styled('span')(({ theme }) => [
+  {
+    fontWeight: 500,
+    fontSize: '18px',
+    lineHeight: '22px',
+    color: 'var(--text-color-3)',
+  },
+  theme.applyStyles('dark', {
+    color: 'var(--text-color-2)',
+  }),
+]);
 
 interface DayCardProps {
   temperature_2m_mean: number;
@@ -87,10 +112,11 @@ const DayCard: React.FC<DayCardProps> = ({
 
 export const WeaklyWeather: React.FC = () => {
   const data = useContext(CurrentWeaklyWeatherContext);
+  const { t } = useTranslation();
 
   return (
     <Card height={381} spacing="30px" justifyContent="center">
-      <Title>2 weeks Forecast</Title>
+      <Title>{t('2 weeks Forecast')}</Title>
       <Stack direction="row" spacing="18px">
         <Swiper
           slidesPerView={11}

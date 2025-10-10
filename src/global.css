@@ -10,7 +10,11 @@
   --light-bg: #f3fafe;
   --dark-bg: #151d32;
   --bg-color-1: #292f45;
+  --bg-color-2: #e1e9ee;
+  --bg-color-3: #cdd9e0;
+  --bg-color-4: #3f4861;
   --text-color-1: #3d4852;
   --text-color-2: #f3f4f7;
+  --text-color-3: #003464;
   --box-shadow-1: 0px 4px 10px rgba(0, 0, 0, 0.15);
 }
