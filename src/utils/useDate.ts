@@ -14,6 +14,9 @@ export const useDate = (
   const month = new Intl.DateTimeFormat(locale, { month: monthLong }).format(
     object,
   );
+  const monthNumber = new Intl.DateTimeFormat(locale, {
+    month: 'numeric',
+  }).format(object);
   const year = new Intl.DateTimeFormat(locale, { year: 'numeric' }).format(
     object,
   );
@@ -30,7 +33,7 @@ export const useDate = (
     timeName = hours >= 12 ? 'بعد از ظهر' : 'قبل از ظهر';
   }
 
-  return { weekday, monthday, month, year, time, timeName };
+  return { weekday, monthday, month, year, time, timeName, monthNumber };
 };
 
 export default useDate;

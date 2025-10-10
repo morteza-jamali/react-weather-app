@@ -17,6 +17,7 @@
     "@mui/icons-material": "^7.3.4",
     "@mui/material": "^7.3.4",
     "@mui/stylis-plugin-rtl": "^7.3.3",
+    "@mui/x-charts": "^8.14.0",
     "axios": "^1.12.2",
     "i18next": "^25.5.3",
     "i18next-http-backend": "^3.0.2",
