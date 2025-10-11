@@ -1,26 +1,29 @@
 import { useNavigate } from 'react-router';
-import { useLocation, useUserInfo, type PlaceType } from '../hooks';
 import { Fragment, useEffect, useState } from 'react';
-import {
-  CurrentAndWeakly,
-  Footer,
-  MonthlyTemp,
-  PageTitle,
-  SearchLocation,
-  SettingsMenu,
-} from '../components';
 import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material/styles';
-import { Box, Stack, Typography, useMediaQuery } from '@mui/material';
-import { sxWithFaFont } from '../utils';
-import { LocationContext } from '../contexts';
+import { Box, Stack, Typography } from '@mui/material';
+import { sxWithFaFont } from '../utils/sxWithFaFont';
+import { LocationContext } from '../contexts/LocationContext';
+import useUserInfo from '../hooks/use-user-info';
+import useLocation, { type PlaceType } from '../hooks/use-location';
+import PageTitle from '../components/PageTitle';
+import SearchLocation from '../components/SearchLocation';
+import SettingsMenu from '../components/SettingsMenu';
+import MonthlyTemp from '../components/MonthlyTemp';
+import CurrentAndWeakly from '../components/CurrentAndWeakly';
+import Footer from '../components/Footer';
 
 const Header = styled(Stack)(({ theme }) => [
   {
     height: '80px',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     padding: '12px 24px',
     boxShadow: 'var(--box-shadow-1)',
     '@media (max-width: 600px)': {
+      flexDirection: 'column',
+      justifyContent: 'center',
       height: 'auto',
       gap: '30px',
       padding: '20px',
@@ -58,10 +61,10 @@ const Main = styled(Box)({
     'currentWeather monthlyTemp'
     '2weaksForecast 2weaksForecast'
   `,
-  '@media (max-width: 1100px)': {
+  '@media (max-width: 1298px)': {
     gridTemplateColumns: '1fr 1fr',
   },
-  '@media (max-width: 900px)': {
+  '@media (max-width: 970px)': {
     gridTemplateColumns: '1fr',
     columnGap: 0,
     gridTemplateAreas: `
@@ -73,9 +76,8 @@ const Main = styled(Box)({
 });
 
 export const Dashboard = () => {
-  const mQ600Match = useMediaQuery('(max-width: 600px)');
   const { isLogedIn } = useUserInfo();
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isLogedIn) {
@@ -91,11 +93,7 @@ export const Dashboard = () => {
     <Fragment>
       <LocationContext value={locationState}>
         <PageTitle title={t('dashboard')} />
-        <Header
-          direction={mQ600Match ? 'column' : 'row'}
-          justifyContent={mQ600Match ? 'center' : 'space-between'}
-          alignItems="center"
-        >
+        <Header alignItems="center">
           <HeaderLogo direction="row" alignItems="center" spacing="8px">
             <img src="/favicon.png" alt="logo" draggable={false} />
             <AppTitle variant="h6" sx={sxWithFaFont(i18n.language)}>

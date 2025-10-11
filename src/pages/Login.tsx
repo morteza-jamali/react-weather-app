@@ -11,11 +11,12 @@ import {
 } from '@mui/material';
 import { styled, useColorScheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import { sxWithFaFont } from '../utils';
+import { sxWithFaFont } from '../utils/sxWithFaFont';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useLanguage, useUserInfo } from '../hooks';
-import { PageTitle } from '../components';
+import { PageTitle } from '../components/PageTitle';
+import useUserInfo from '../hooks/use-user-info';
+import useLanguage from '../hooks/use-language';
 
 const locales = [
   {
@@ -100,7 +101,7 @@ const LoginTitle = styled(Typography)(({ theme }) => [
 ]);
 
 export const Login = () => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const userInfo = useUserInfo();
 
   useEffect(() => {

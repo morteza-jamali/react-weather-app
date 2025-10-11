@@ -4,25 +4,35 @@ import { Stack, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import { sxWithFaFont, useDate } from '../utils';
 import { useEffect, useState } from 'react';
+import parseDate from '../utils/parseDate';
+import sxWithFaFont from '../utils/sxWithFaFont';
 
+// NOTE: Doe to a bug of stylis-plugin-rtl we should use /* @noflip */ with gradients to work on RTL direction
+// NOTE: https://github.com/styled-components/stylis-plugin-rtl/issues/36
 const RootStack = styled(Stack)(({ theme }) => [
   {
     height: '106px',
     padding: '0 28px',
     marginTop: '50px',
     background:
-      'linear-gradient(90deg, var(--light-bg) 0%, rgba(204, 221, 221, 0.619608) 51%, var(--light-bg) 100%)',
+      'linear-gradient(90deg, var(--light-bg) 0%, rgba(204, 221, 221, 0.619608) 51%, var(--light-bg) 100%) /* @noflip */',
     '@media (max-width: 554px)': {
       height: 'auto',
       paddingTop: '28px',
       paddingBottom: '28px',
     },
+    '@media (min-height: 935px)': {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      left: 0,
+      top: 'auto',
+    },
   },
   theme.applyStyles('dark', {
     background:
-      'linear-gradient(90deg, var(--bg-color-1) 0%, var(--bg-color-4) 50.5%, var(--dark-bg) 98%)',
+      'linear-gradient(90deg, var(--bg-color-1) 0%, var(--bg-color-4) 50.5%, var(--dark-bg) 98%) /* @noflip */',
   }),
 ]);
 
@@ -58,7 +68,7 @@ export const Footer: React.FC = () => {
   const mQ870Match = useMediaQuery('(max-width: 870px)');
   const mQ554Match = useMediaQuery('(max-width: 554px)');
   const { t, i18n } = useTranslation();
-  const getDate = () => useDate(new Date(), i18n.language as any, 'long');
+  const getDate = () => parseDate(new Date(), i18n.language as Langs, 'long');
   const [{ time, weekday, monthday, month, year }, setDate] =
     useState(getDate());
 

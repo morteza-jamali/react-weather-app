@@ -1,12 +1,14 @@
 import { Stack, useMediaQuery } from '@mui/material';
 import type React from 'react';
-import { styled } from '@mui/material/styles';
+import { styled, useColorScheme } from '@mui/material/styles';
 import { useContext } from 'react';
-import { CurrentWeaklyWeatherContext, LocationContext } from '../contexts';
-import { checkTextDir, useDate } from '../utils';
 import { useTranslation } from 'react-i18next';
 import WmoCodes from '../wmo-codes.json';
 import type { WmoCodesType } from './CurrentAndWeakly';
+import checkTextDir from '../utils/checkTextDir';
+import parseDate from '../utils/parseDate';
+import LocationContext from '../contexts/LocationContext';
+import CurrentWeaklyWeatherContext from '../contexts/CurrentWeaklyWeatherContext';
 
 const LocationRoot = styled(Stack)({
   borderRadius: '50px',
@@ -21,9 +23,9 @@ const LocationRoot = styled(Stack)({
 });
 
 const Location: React.FC = () => {
-  const [location, _] = useContext(LocationContext);
-  const textDirection = checkTextDir(location?.name!);
-  const mQ420Match = useMediaQuery('(max-width: 420px)');
+  const [location] = useContext(LocationContext);
+  const textDirection = checkTextDir(location!.name!);
+  const mQ550Match = useMediaQuery('(max-width: 550px)');
 
   return (
     <LocationRoot
@@ -31,7 +33,7 @@ const Location: React.FC = () => {
       spacing="13px"
       justifyContent="start"
       alignItems="center"
-      alignSelf={mQ420Match ? 'center' : 'start'}
+      alignSelf={mQ550Match ? 'center' : 'start'}
     >
       <img src="/location_dark.svg" alt="location" height="20px" width="auto" />
       <span style={textDirection ? { fontFamily: 'IRANYekanX VF' } : {}}>
@@ -66,19 +68,19 @@ const DateTime = styled('span')(({ theme }) => [
 ]);
 
 const CurrentDate: React.FC = () => {
-  const mQ420Match = useMediaQuery('(max-width: 420px)');
+  const mQ550Match = useMediaQuery('(max-width: 550px)');
   const data = useContext(CurrentWeaklyWeatherContext);
   const { i18n } = useTranslation();
-  const { weekday, year, month, monthday, time, timeName } = useDate(
-    data?.current.time!,
-    i18n.language as any,
+  const { weekday, year, month, monthday, time, timeName } = parseDate(
+    data!.current.time!,
+    i18n.language as Langs,
   );
 
   return (
     <Stack
       spacing="4px"
       justifyContent="center"
-      alignItems={mQ420Match ? 'center' : 'start'}
+      alignItems={mQ550Match ? 'center' : 'start'}
     >
       <TodayName>{weekday}</TodayName>
       <Stack direction="row" spacing="20px">
@@ -121,20 +123,21 @@ const TemperatureText = styled('span')(({ theme }) => [
 const HighLow = styled(DateTime)({});
 
 const Temperature: React.FC = () => {
-  const mQ420Match = useMediaQuery('(max-width: 420px)');
+  const mQ550Match = useMediaQuery('(max-width: 550px)');
   const data = useContext(CurrentWeaklyWeatherContext);
   const { t } = useTranslation();
+  const { mode } = useColorScheme();
 
   return (
     <Stack
       spacing="4px"
       justifyContent="center"
-      alignItems={mQ420Match ? 'center' : 'start'}
+      alignItems={mQ550Match ? 'center' : 'start'}
     >
       <Stack direction="row" sx={{ gap: '5px' }} dir="ltr">
         <TemperatureText>{data?.current.temperature_2m}</TemperatureText>
         <img
-          src="/circle_dark.svg"
+          src={`/circle${mode === 'dark' ? '_dark' : ''}.svg`}
           width="16px"
           style={{ marginInlineEnd: '5px', alignSelf: 'start' }}
         />
@@ -160,7 +163,7 @@ const Card = styled(Stack)(({ theme }) => [
     padding: '20px 24px',
     width: '607px',
     gridArea: 'currentWeather',
-    '@media (max-width: 1100px)': {
+    '@media (max-width: 1298px)': {
       width: 'auto',
     },
   },
@@ -194,11 +197,11 @@ const FeelsLikeText = styled('span')(({ theme }) => [
 ]);
 
 export const CurrentWeather: React.FC = () => {
-  const mQ420Match = useMediaQuery('(max-width: 420px)');
+  const mQ550Match = useMediaQuery('(max-width: 550px)');
   const { t, i18n } = useTranslation();
   const data = useContext(CurrentWeaklyWeatherContext);
   const weatherCodeData = (WmoCodes as WmoCodesType)[
-    data?.current.weather_code!
+    data!.current.weather_code!
   ];
   const is_dayOrNight = data?.current.is_day === 0 ? 'night' : 'day';
   const weatherStatusImg =
@@ -208,25 +211,25 @@ export const CurrentWeather: React.FC = () => {
 
   return (
     <Card
-      direction={mQ420Match ? 'column' : 'row'}
+      direction={mQ550Match ? 'column' : 'row'}
       justifyContent="space-between"
       alignItems="center"
       sx={{
-        height: mQ420Match ? 'auto' : '234px',
-        gap: mQ420Match ? '50px' : 0,
+        height: mQ550Match ? 'auto' : '234px',
+        gap: mQ550Match ? '50px' : '20px',
       }}
     >
       <Stack
         spacing="16px"
         justifyContent="center"
-        {...(mQ420Match ? { alignItems: 'center' } : {})}
+        {...(mQ550Match ? { alignItems: 'center' } : {})}
       >
         <Location />
         <CurrentDate />
         <Temperature />
       </Stack>
       <Stack
-        alignItems={mQ420Match ? 'center' : 'end'}
+        alignItems={mQ550Match ? 'center' : 'end'}
         justifyContent="center"
         spacing="10px"
       >
@@ -238,7 +241,7 @@ export const CurrentWeather: React.FC = () => {
         />
         <Stack
           justifyContent="center"
-          alignItems={mQ420Match ? 'center' : 'start'}
+          alignItems={mQ550Match ? 'center' : 'start'}
           spacing="8px"
         >
           <StatusText>{t(weatherCodeData.name)}</StatusText>

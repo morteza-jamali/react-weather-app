@@ -2,14 +2,16 @@ import type React from 'react';
 import { styled } from '@mui/material/styles';
 import { Stack } from '@mui/material';
 import { useContext } from 'react';
-import { CurrentWeaklyWeatherContext } from '../contexts';
+import { CurrentWeaklyWeatherContext } from '../contexts/CurrentWeaklyWeatherContext';
 import WmoCodes from '../wmo-codes.json';
 import type { WmoCodesType } from './CurrentAndWeakly';
 import { useTranslation } from 'react-i18next';
-import { useDate } from '../utils';
+import parseDate from '../utils/parseDate';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { FreeMode } from 'swiper/modules';
 
 import 'swiper/css';
+import 'swiper/css/free-mode';
 
 const Card = styled(Stack)(({ theme }) => [
   {
@@ -51,6 +53,10 @@ const DayCardRoot = styled(Stack)(({ theme }) => [
 
 const Slide = styled(SwiperSlide)({
   width: '104px !important',
+  '&.myswiper-slide': {
+    marginLeft: '9px !important',
+    marginRight: '9px !important',
+  },
 });
 
 const DayName = styled('span')(({ theme }) => [
@@ -91,7 +97,7 @@ const DayCard: React.FC<DayCardProps> = ({
   index,
 }) => {
   const { i18n, t } = useTranslation();
-  const date = useDate(time, i18n.language as any);
+  const date = parseDate(time, i18n.language as any);
   const weatherCodeData = (WmoCodes as WmoCodesType)[weather_code];
   const weatherStatusImg =
     typeof weatherCodeData.image === 'string'
@@ -110,8 +116,6 @@ const DayCard: React.FC<DayCardProps> = ({
   );
 };
 
-// FIXME: Space of Swipperjs changes when dashboard direction changes
-// FIXME: Swipperjs doesn't work corectly on small screens
 export const WeaklyWeather: React.FC = () => {
   const data = useContext(CurrentWeaklyWeatherContext);
   const { t, i18n } = useTranslation();
@@ -119,28 +123,33 @@ export const WeaklyWeather: React.FC = () => {
   return (
     <Card height={381} spacing="30px" justifyContent="center">
       <Title>{t('2 weeks Forecast')}</Title>
-      <Stack direction="row" spacing="18px">
-        <Swiper
-          dir={i18n.dir()}
-          slidesPerView={11}
-          spaceBetween="18px"
-          grabCursor={true}
-          pagination={{
-            clickable: true,
-          }}
-        >
-          {data?.daily.time.map((t, index) => (
-            <Slide key={`daycard-${index}`}>
-              <DayCard
-                time={t}
-                temperature_2m_mean={data.daily.temperature_2m_mean[index]}
-                weather_code={data.daily.weather_code[index]}
-                {...{ index }}
-              />
-            </Slide>
-          ))}
-        </Swiper>
-      </Stack>
+      <Swiper
+        dir={i18n.dir()}
+        slidesPerView={'auto'}
+        spaceBetween="18px"
+        grabCursor={true}
+        freeMode={true}
+        pagination={{
+          clickable: true,
+        }}
+        modules={[FreeMode]}
+        style={
+          i18n.language === 'en'
+            ? { paddingRight: '25px', marginLeft: '-9px' }
+            : { paddingLeft: '25px', marginRight: '-9px' }
+        }
+      >
+        {data?.daily.time.map((t, index) => (
+          <Slide key={`daycard-${index}`} className="myswiper-slide">
+            <DayCard
+              time={t}
+              temperature_2m_mean={data.daily.temperature_2m_mean[index]}
+              weather_code={data.daily.weather_code[index]}
+              {...{ index }}
+            />
+          </Slide>
+        ))}
+      </Swiper>
     </Card>
   );
 };

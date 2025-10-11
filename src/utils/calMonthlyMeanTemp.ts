@@ -1,4 +1,4 @@
-import useDate from './useDate';
+import parseDate from './parseDate';
 
 export interface MonthlyMeanTempType {
   time: string[];
@@ -34,8 +34,8 @@ export const calMonthlyMeanTemp = (data: MonthlyMeanTempType) => {
 
   const faMonths: string[] = [];
   months.forEach((month, index) => {
-    months[index] = useDate(`2025-${month}-01`).month;
-    faMonths.push(useDate(`2025-${month}-01`, 'fa').month);
+    months[index] = parseDate(`2025-${month}-01`).month;
+    faMonths.push(parseDate(`2025-${month}-01`, 'fa').month);
   });
 
   return { faMonths, enMonths: months, monthsTemp };

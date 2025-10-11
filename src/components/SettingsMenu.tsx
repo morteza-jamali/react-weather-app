@@ -12,9 +12,10 @@ import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined';
 import BedtimeOutlinedIcon from '@mui/icons-material/BedtimeOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import { useTranslation } from 'react-i18next';
-import { useLanguage, useUserInfo } from '../hooks';
 import { useNavigate } from 'react-router';
-import { sxWithFaFont } from '../utils';
+import { sxWithFaFont } from '../utils/sxWithFaFont';
+import useUserInfo from '../hooks/use-user-info';
+import useLanguage from '../hooks/use-language';
 
 const SettingsButton = styled(Button)(({ theme }) => [
   {
@@ -113,7 +114,7 @@ export const SettingsMenu: React.FC = () => {
   const { logout } = useUserInfo();
   const { changeLang } = useLanguage();
   const { setMode, mode } = useColorScheme();
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 

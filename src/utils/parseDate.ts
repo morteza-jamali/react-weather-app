@@ -1,6 +1,6 @@
-export const useDate = (
+export const parseDate = (
   date: string | Date,
-  lang: 'en' | 'fa' = 'en',
+  lang: Langs = 'en',
   monthLong: 'short' | 'long' = 'short',
 ) => {
   const object = typeof date === 'string' ? new Date(date) : date;
@@ -36,4 +36,4 @@ export const useDate = (
   return { weekday, monthday, month, year, time, timeName, monthNumber };
 };
 
-export default useDate;
+export default parseDate;

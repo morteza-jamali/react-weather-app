@@ -8,12 +8,14 @@ import {
 import type React from 'react';
 import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material/styles';
-import { checkTextDir, sxWithFaFont, useCacheRequest } from '../utils';
 import { Fragment, useContext, useEffect, useMemo, useState } from 'react';
 import { debounce } from '@mui/material/utils';
 import _ from 'lodash';
-import { useLocation, type PlaceType } from '../hooks';
-import { LocationContext } from '../contexts';
+import { useLocation, type PlaceType } from '../hooks/use-location';
+import { LocationContext } from '../contexts/LocationContext';
+import checkTextDir from '../utils/checkTextDir';
+import sxWithFaFont from '../utils/sxWithFaFont';
+import getCacheRequest from '../utils/getCacheRequest';
 
 export interface FetchCallbackProps {
   error?: any;
@@ -26,15 +28,15 @@ const fetch = debounce(
     callback: (props?: FetchCallbackProps) => void,
   ) => {
     try {
-      const result = await useCacheRequest(requestUrl);
+      const { data } = await getCacheRequest(requestUrl);
 
-      if (result.results === undefined || result.results === null) {
+      if (data.results === undefined || data.results === null) {
         callback();
         return;
       }
 
       callback({
-        results: (result.results as PlaceType[]).map(
+        results: (data.results as PlaceType[]).map(
           ({ admin1, country, latitude, longitude, name, admin2 }) => ({
             name,
             latitude,
@@ -285,6 +287,13 @@ export const SearchLocation: React.FC = () => {
 
     if (eventsCount === 1 && inputEvent !== 'blur') {
       setIsRTL(checkTextDir(inputValue));
+
+      if (inputValue.length < 2) {
+        setLoading(false);
+        setNoOptionsText(t('noLocation'));
+        setOptions([]);
+        return;
+      }
 
       fetch(
         `https://geocoding-api.open-meteo.com/v1/search?name=${inputValue}&count=10&language=${isRTL ? 'fa' : 'en'}&format=json`,

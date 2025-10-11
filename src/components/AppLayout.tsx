@@ -1,7 +1,7 @@
 import { ThemeProvider, type Direction } from '@mui/material/styles';
 import { CacheProvider } from '@emotion/react';
 import createTheme from '../theme';
-import { RTLDirectionContext } from '../contexts';
+import { RTLDirectionContext } from '../contexts/RTLDirectionContext';
 import React, { useEffect, useState } from 'react';
 import createCache from '@emotion/cache';
 import { prefixer } from 'stylis';

@@ -1,16 +1,14 @@
 import type React from 'react';
-import { Fragment, Suspense as ReactSuspense, use, useContext } from 'react';
+import { Fragment, lazy, Suspense as ReactSuspense, useContext } from 'react';
 import WeatherSkeleten from './WeatherSkeleten';
-import CurrentWeather from './CurrentWeather';
-import { CurrentWeaklyWeatherContext, LocationContext } from '../contexts';
+import { LocationContext } from '../contexts/LocationContext';
 import axios from 'axios';
-import WeaklyWeather from './WeaklyWeather';
 import ErrorBoundary from './ErrorBoundary';
 import { styled } from '@mui/material/styles';
 import { Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
-import { sxWithFaFont } from '../utils';
+import { sxWithFaFont } from '../utils/sxWithFaFont';
 
 export interface WmoCodesType {
   [key: number]: {
@@ -41,20 +39,7 @@ export interface CurrentWeaklyDataType {
   };
 }
 
-const LazyLoad: React.FC<{ requestPromise: Promise<any> }> = ({
-  requestPromise,
-}) => {
-  const data = use(requestPromise).data as CurrentWeaklyDataType;
-
-  return (
-    <Fragment>
-      <CurrentWeaklyWeatherContext value={data}>
-        <CurrentWeather />
-        <WeaklyWeather />
-      </CurrentWeaklyWeatherContext>
-    </Fragment>
-  );
-};
+const LazyLoad = lazy(() => import('./CurrentAndWeaklyLazyLoad'));
 
 const Loading: React.FC = () => {
   return (
@@ -63,13 +48,16 @@ const Loading: React.FC = () => {
         variant="rounded"
         animation="wave"
         sx={{
+          height: '234px',
           gridArea: 'currentWeather',
           width: '607px',
-          '@media (max-width: 1100px)': {
+          '@media (max-width: 1298px)': {
             width: 'auto',
           },
+          '@media (max-width: 550px)': {
+            height: '478px',
+          },
         }}
-        height={234}
       />
       <WeatherSkeleten
         variant="rounded"
@@ -99,13 +87,16 @@ const ErrorFallback: React.FC = () => {
     <Fragment>
       <ErrorFallbackRoot
         sx={{
+          height: '234px',
           gridArea: 'currentWeather',
           width: '607px',
-          '@media (max-width: 1100px)': {
+          '@media (max-width: 1298px)': {
             width: 'auto',
           },
+          '@media (max-width: 550px)': {
+            height: '478px',
+          },
         }}
-        height={234}
         justifyContent="center"
         alignItems="center"
         direction="row"
@@ -134,7 +125,7 @@ const ErrorFallback: React.FC = () => {
 };
 
 const Suspense: React.FC = () => {
-  const [location, _] = useContext(LocationContext);
+  const [location] = useContext(LocationContext);
 
   if (!location) {
     return null;
