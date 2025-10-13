@@ -178,6 +178,7 @@ const StatusText = styled('span')(({ theme }) => [
     fontSize: '32px',
     lineHeight: '39px',
     color: 'var(--text-color-3)',
+    textAlign: 'center',
   },
   theme.applyStyles('dark', {
     color: 'var(--text-color-2)',

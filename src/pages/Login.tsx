@@ -12,7 +12,7 @@ import {
 import { styled, useColorScheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import { sxWithFaFont } from '../utils/sxWithFaFont';
-import { useEffect, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { PageTitle } from '../components/PageTitle';
 import useUserInfo from '../hooks/use-user-info';
@@ -112,27 +112,24 @@ export const Login = () => {
 
   const { t, i18n } = useTranslation();
   const { mode } = useColorScheme();
-  const [name, setName] = useState('');
+  const [nameValue, setNameValue] = useState('');
   const { changeLang } = useLanguage();
-  const [nameValidation, setNameValidation] = useState<string | null>(null);
-  const mQ1066Match = useMediaQuery('(max-width: 1066px)');
-  const mQ606Match = useMediaQuery('(max-width: 606px)');
-  const mQ380Match = useMediaQuery('(max-width: 380px)');
-  const mQ260Match = useMediaQuery('(max-width: 260px)');
-
-  const loginHandler = () => {
-    const newName = name.trim();
-
-    setNameValidation(null);
+  const [nameValidation, setNameValidation] = useState<boolean>(false);
+  const [error, formAction] = useActionState((_: any, queryData: FormData) => {
+    const newName = (queryData.get('name') as string).trim();
 
     if (newName.length === 0) {
-      setNameValidation(t('loginNameError'));
-      return;
+      setNameValidation(true);
+      return 'loginNameError';
     }
 
     userInfo.setName(newName);
     navigate('/');
-  };
+  }, ' ');
+  const mQ1066Match = useMediaQuery('(max-width: 1066px)');
+  const mQ606Match = useMediaQuery('(max-width: 606px)');
+  const mQ380Match = useMediaQuery('(max-width: 380px)');
+  const mQ260Match = useMediaQuery('(max-width: 260px)');
 
   return !userInfo.isLogedIn ? (
     <Root sx={mQ606Match ? { display: 'block' } : null}>
@@ -161,38 +158,53 @@ export const Login = () => {
                 height: '355px',
               }}
             >
-              <Stack spacing="200px">
-                <Stack spacing="32px" alignItems="center">
-                  <LoginTitle variant="h5" sx={sxWithFaFont(i18n.language)}>
-                    {t('login')}
-                  </LoginTitle>
-                  <TextField
-                    variant="outlined"
-                    sx={sxWithFaFont(
-                      i18n.language,
-                      {
-                        width: '100%',
-                      },
-                      {
-                        '& .MuiFormHelperText-root, & .MuiInputBase-root': {
-                          fontFamily: 'IRANYekanX VF',
-                        },
-                      },
-                    )}
-                    placeholder={t('loginInputPlaceholder')}
-                    onChange={(event) => setName(event.target.value)}
-                    error={nameValidation !== null}
-                    helperText={nameValidation}
-                  />
-                </Stack>
-                <LoginButton
-                  variant="contained"
-                  sx={sxWithFaFont(i18n.language)}
-                  onClick={loginHandler}
+              <form action={formAction} style={{ flexGrow: 1 }}>
+                <Stack
+                  justifyContent="space-between"
+                  sx={{ height: '100%' }}
+                  spacing={mQ380Match ? 0 : '200px'}
                 >
-                  {t('login')}
-                </LoginButton>
-              </Stack>
+                  <Stack spacing="32px" alignItems="center">
+                    <LoginTitle variant="h5" sx={sxWithFaFont(i18n.language)}>
+                      {t('login')}
+                    </LoginTitle>
+                    <TextField
+                      variant="outlined"
+                      sx={sxWithFaFont(
+                        i18n.language,
+                        {
+                          width: '100%',
+                        },
+                        {
+                          '& .MuiFormHelperText-root, & .MuiInputBase-root': {
+                            fontFamily: 'IRANYekanX VF',
+                          },
+                        },
+                      )}
+                      placeholder={t('loginInputPlaceholder')}
+                      value={nameValue}
+                      onChange={(event) => {
+                        setNameValue(event.target.value);
+                        setNameValidation(false);
+                      }}
+                      error={nameValidation && typeof error === 'string'}
+                      helperText={
+                        nameValidation && typeof error === 'string'
+                          ? t(error)
+                          : ' '
+                      }
+                      name="name"
+                    />
+                  </Stack>
+                  <LoginButton
+                    variant="contained"
+                    sx={sxWithFaFont(i18n.language)}
+                    type="submit"
+                  >
+                    {t('login')}
+                  </LoginButton>
+                </Stack>
+              </form>
             </FormControl>
           </Box>
           <CloudsImg
