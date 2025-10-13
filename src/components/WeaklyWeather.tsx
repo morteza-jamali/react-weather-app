@@ -138,6 +138,7 @@ export const WeaklyWeather: React.FC = () => {
             ? { paddingRight: '25px', marginLeft: '-9px' }
             : { paddingLeft: '25px', marginRight: '-9px' }
         }
+        onSwiper={(swiper) => swiper.setProgress(0)}
       >
         {data?.daily.time.map((t, index) => (
           <Slide key={`daycard-${index}`} className="myswiper-slide">
