@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/morteza-jamali/react-weather-app/refs/heads/wip/public/logo.svg" alt="Weather Dashboard" title="Weather Dashboard" width="150px" />
+<img src="https://raw.githubusercontent.com/morteza-jamali/react-weather-app/refs/heads/master/public/logo.png" alt="Weather Dashboard" title="Weather Dashboard" width="150px" />
 
 ## Weather Dashboard
 
