@@ -2,7 +2,7 @@
 
 ## Weather Dashboard
 
-A simple web application build with **React.js** that allows users to search for a city to get the current weather, 14 day forecast and average temperature of last 12 month
+A simple web application built with **React.js** that allows users to search for a city to get the current weather, 14 days forecast and average temperature of last 12 months
 
 ### Features
 

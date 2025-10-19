@@ -7,7 +7,7 @@ import WmoCodes from '../wmo-codes.json';
 import type { WmoCodesType } from './CurrentAndWeakly';
 import { useTranslation } from 'react-i18next';
 import parseDate from '../utils/parseDate';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper as ReactSwiper, SwiperSlide } from 'swiper/react';
 import { FreeMode } from 'swiper/modules';
 
 import 'swiper/css';
@@ -52,11 +52,23 @@ const DayCardRoot = styled(Stack)(({ theme }) => [
 ]);
 
 const Slide = styled(SwiperSlide)({
-  width: '104px !important',
-  '&.myswiper-slide': {
+  '&.myswiper__slide': {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '104px',
+  },
+  '&.myswiper__slide:not(:first-child)': {
     marginLeft: '9px !important',
     marginRight: '9px !important',
   },
+  '&.myswiper__slide:first-child': {
+    marginRight: '9px !important',
+  },
+});
+
+const Swiper = styled(ReactSwiper)({
+  width: '100%',
 });
 
 const DayName = styled('span')(({ theme }) => [
@@ -126,7 +138,6 @@ export const WeaklyWeather: React.FC = () => {
       <Swiper
         dir={i18n.dir()}
         slidesPerView={'auto'}
-        spaceBetween="18px"
         grabCursor={true}
         freeMode={true}
         pagination={{
@@ -135,13 +146,13 @@ export const WeaklyWeather: React.FC = () => {
         modules={[FreeMode]}
         style={
           i18n.language === 'en'
-            ? { paddingRight: '25px', marginLeft: '-9px' }
-            : { paddingLeft: '25px', marginRight: '-9px' }
+            ? { paddingRight: '25px' }
+            : { paddingLeft: '25px' }
         }
         onSwiper={(swiper) => swiper.setProgress(0)}
       >
         {data?.daily.time.map((t, index) => (
-          <Slide key={`daycard-${index}`} className="myswiper-slide">
+          <Slide key={`daycard-${index}`} className="myswiper__slide">
             <DayCard
               time={t}
               temperature_2m_mean={data.daily.temperature_2m_mean[index]}
