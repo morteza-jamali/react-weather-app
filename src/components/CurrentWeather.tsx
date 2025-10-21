@@ -1,7 +1,7 @@
-import { Stack, useMediaQuery } from '@mui/material';
+import { Skeleton, Stack, useMediaQuery } from '@mui/material';
 import type React from 'react';
 import { styled, useColorScheme } from '@mui/material/styles';
-import { useContext } from 'react';
+import { useContext, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import WmoCodes from '../wmo-codes.json';
 import type { WmoCodesType } from './CurrentAndWeakly';
@@ -9,6 +9,7 @@ import checkTextDir from '../utils/checkTextDir';
 import parseDate from '../utils/parseDate';
 import LocationContext from '../contexts/LocationContext';
 import CurrentWeaklyWeatherContext from '../contexts/CurrentWeaklyWeatherContext';
+import LoadImage from './LoadImage';
 
 const LocationRoot = styled(Stack)({
   borderRadius: '50px',
@@ -21,6 +22,23 @@ const LocationRoot = styled(Stack)({
     color: 'var(--text-color-1)',
   },
 });
+
+const LocationIcon: React.FC = () => (
+  <svg
+    width="15"
+    height="20"
+    viewBox="0 0 15 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M7.5 5.625C6.46437 5.625 5.625 6.46437 5.625 7.5C5.625 8.53562 6.46437 9.375 7.5 9.375C8.53562 9.375 9.375 8.53562 9.375 7.5C9.375 6.46437 8.53562 5.625 7.5 5.625ZM7.5 10.625C5.77437 10.625 4.375 9.22625 4.375 7.5C4.375 5.77375 5.77437 4.375 7.5 4.375C9.22562 4.375 10.625 5.77375 10.625 7.5C10.625 9.22625 9.22562 10.625 7.5 10.625ZM7.5 0C3.35812 0 0 3.35812 0 7.5C0 10.6362 6.25312 20.0069 7.5 20C8.7275 20.0069 15 10.5937 15 7.5C15 3.35812 11.6419 0 7.5 0Z"
+      fill="#3D4852"
+    />
+  </svg>
+);
 
 const Location: React.FC = () => {
   const [location] = useContext(LocationContext);
@@ -35,7 +53,7 @@ const Location: React.FC = () => {
       alignItems="center"
       alignSelf={mQ550Match ? 'center' : 'start'}
     >
-      <img src="/location_dark.svg" alt="location" height="20px" width="auto" />
+      <LocationIcon />
       <span style={textDirection ? { fontFamily: 'IRANYekanX VF' } : {}}>
         {location?.name}
       </span>
@@ -122,6 +140,36 @@ const TemperatureText = styled('span')(({ theme }) => [
 
 const HighLow = styled(DateTime)({});
 
+interface CircleIconProps {
+  style?: CSSProperties;
+}
+
+const CircleIcon: React.FC<CircleIconProps> = (props) => (
+  <svg
+    {...props}
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="8" cy="8" r="6.5" stroke="#003464" strokeWidth="3" />
+  </svg>
+);
+
+const CircleDarkIcon: React.FC<CircleIconProps> = (props) => (
+  <svg
+    {...props}
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="8" cy="8" r="6.5" stroke="#F3F4F7" strokeWidth="3" />
+  </svg>
+);
+
 const Temperature: React.FC = () => {
   const mQ550Match = useMediaQuery('(max-width: 550px)');
   const data = useContext(CurrentWeaklyWeatherContext);
@@ -136,11 +184,13 @@ const Temperature: React.FC = () => {
     >
       <Stack direction="row" sx={{ gap: '5px' }} dir="ltr">
         <TemperatureText>{data?.current.temperature_2m}</TemperatureText>
-        <img
-          src={`/circle${mode === 'dark' ? '_dark' : ''}.svg`}
-          width="16px"
-          style={{ marginInlineEnd: '5px', alignSelf: 'start' }}
-        />
+        {mode === 'dark' ? (
+          <CircleDarkIcon
+            style={{ marginInlineEnd: '5px', alignSelf: 'start' }}
+          />
+        ) : (
+          <CircleIcon style={{ marginInlineEnd: '5px', alignSelf: 'start' }} />
+        )}
         <TemperatureText>C</TemperatureText>
       </Stack>
       <Stack direction="row" spacing="15px" alignItems="center">
@@ -182,6 +232,23 @@ const StatusText = styled('span')(({ theme }) => [
   },
   theme.applyStyles('dark', {
     color: 'var(--text-color-2)',
+  }),
+]);
+
+const StatusImage = styled(LoadImage)(({ theme }) => [
+  {
+    '& .fallback__root': {
+      backgroundColor: 'var(--bg-color-2)',
+      alignItems: 'end',
+    },
+    '& img': {
+      margin: '0 0 0 auto',
+    },
+  },
+  theme.applyStyles('dark', {
+    '& .fallback__root': {
+      backgroundColor: 'var(--bg-color-1)',
+    },
   }),
 ]);
 
@@ -234,11 +301,19 @@ export const CurrentWeather: React.FC = () => {
         justifyContent="center"
         spacing="10px"
       >
-        <img
+        <StatusImage
           src={`/wmo_images/${weatherStatusImg}`}
           alt="weather image"
           height="115px"
           width="auto"
+          fallback={
+            <Skeleton
+              variant="circular"
+              width="115px"
+              height="115px"
+              animation="wave"
+            />
+          }
         />
         <Stack
           justifyContent="center"

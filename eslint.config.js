@@ -25,6 +25,7 @@ export default defineConfig([
       '@typescript-eslint/no-unused-vars': ['warn'],
       'no-misleading-character-class': ['warn'],
       '@typescript-eslint/no-non-null-asserted-optional-chain': ['warn'],
+      '@typescript-eslint/no-empty-object-type': ['warn'],
     },
   },
 ]);

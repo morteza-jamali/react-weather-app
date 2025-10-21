@@ -8,15 +8,18 @@ import {
   TextField,
   Button,
   useMediaQuery,
+  Skeleton,
 } from '@mui/material';
 import { styled, useColorScheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import { sxWithFaFont } from '../utils/sxWithFaFont';
-import { useActionState, useEffect, useState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { PageTitle } from '../components/PageTitle';
 import useUserInfo from '../hooks/use-user-info';
 import useLanguage from '../hooks/use-language';
+import LoadImage from '../components/LoadImage';
+import useWindowResize from '../hooks/use-window-resize';
 
 const locales = [
   {
@@ -66,22 +69,50 @@ const Root = styled(Box)(({ theme }) => [
   }),
 ]);
 
-const CloudsImg = styled('img')({
-  borderTopRightRadius: '12px',
-  borderBottomRightRadius: '12px',
-  userSelect: 'none',
-  '@media (max-width: 1066px)': { width: '100%', objectFit: 'cover' },
-  '@media (max-width: 606px)': {
-    borderBottomRightRadius: 0,
-    borderTopLeftRadius: '12px',
+const CloudsImg = styled(LoadImage)(({ theme }) => [
+  {
+    width: '452.817px',
+    '@media (max-width: 1066px)': { width: 'auto', flexGrow: 1 },
+    '@media (max-width: 606px)': { width: '100%' },
+    '& .fallback__root': {
+      backgroundColor: '#FFFFFF',
+    },
+    '& .MuiSkeleton-root': {
+      width: '100%',
+    },
+    '& img': {
+      '@media (max-width: 1066px)': {
+        objectFit: 'cover',
+        width: '100%',
+      },
+    },
+    '& img, & .MuiSkeleton-root, & .fallback__root': {
+      height: '100%',
+      margin: 0,
+      borderTopRightRadius: '12px',
+      borderBottomRightRadius: '12px',
+      '@media (max-width: 606px)': {
+        borderBottomRightRadius: 0,
+        borderTopLeftRadius: '12px',
+      },
+    },
   },
-});
+  theme.applyStyles('dark', {
+    '& .fallback__root': {
+      backgroundColor: 'var(--bg-color-1)',
+    },
+  }),
+]);
 
 const LoginCard = styled(Stack)(({ theme }) => [
   {
     borderRadius: '12px',
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.25)',
     backgroundColor: '#FFFFFF',
+    height: '560px',
+    '@media (max-width: 606px)': {
+      height: 'auto',
+    },
   },
   theme.applyStyles('dark', {
     backgroundColor: 'var(--bg-color-1)',
@@ -130,6 +161,17 @@ export const Login = () => {
   const mQ606Match = useMediaQuery('(max-width: 606px)');
   const mQ380Match = useMediaQuery('(max-width: 380px)');
   const mQ260Match = useMediaQuery('(max-width: 260px)');
+  const [imageHeight, setImageHeight] = useState<number | false>(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const cardSize = useWindowResize('(max-width: 606px)', cardRef);
+
+  useEffect(() => {
+    if (cardSize) {
+      setImageHeight(cardSize.width * (559 / 452));
+    } else {
+      setImageHeight(false);
+    }
+  }, [cardSize]);
 
   return !userInfo.isLogedIn ? (
     <Root sx={mQ606Match ? { display: 'block' } : null}>
@@ -142,9 +184,9 @@ export const Login = () => {
         <LoginCard
           direction={mQ606Match ? 'column-reverse' : 'row'}
           sx={mQ1066Match ? { width: '100%' } : null}
+          ref={cardRef}
         >
           <Box
-            flexGrow={1}
             sx={{
               display: 'flex',
               alignItems: 'center',
@@ -155,15 +197,11 @@ export const Login = () => {
             <FormControl
               sx={{
                 width: '386px',
-                height: '355px',
+                height: mQ606Match ? '355px' : '100%',
               }}
             >
               <form action={formAction} style={{ flexGrow: 1 }}>
-                <Stack
-                  justifyContent="space-between"
-                  sx={{ height: '100%' }}
-                  spacing={mQ380Match ? 0 : '200px'}
-                >
+                <Stack justifyContent="space-between" sx={{ height: '100%' }}>
                   <Stack spacing="32px" alignItems="center">
                     <LoginTitle variant="h5" sx={sxWithFaFont(i18n.language)}>
                       {t('login')}
@@ -210,7 +248,8 @@ export const Login = () => {
           <CloudsImg
             src={`/${mode === 'light' ? 'login_clouds.png' : 'login_clouds_dark.png'}`}
             alt="login clouds"
-            draggable={false}
+            fallback={<Skeleton variant="rectangular" animation="wave" />}
+            {...(imageHeight ? { sx: { height: imageHeight } } : {})}
           />
         </LoginCard>
         <FormControl sx={{ width: mQ260Match ? '100%' : '220px' }}>

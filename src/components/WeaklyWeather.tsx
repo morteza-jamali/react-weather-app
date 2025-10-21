@@ -1,6 +1,6 @@
 import type React from 'react';
 import { styled } from '@mui/material/styles';
-import { Stack } from '@mui/material';
+import { Skeleton, Stack } from '@mui/material';
 import { useContext } from 'react';
 import { CurrentWeaklyWeatherContext } from '../contexts/CurrentWeaklyWeatherContext';
 import WmoCodes from '../wmo-codes.json';
@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import parseDate from '../utils/parseDate';
 import { Swiper as ReactSwiper, SwiperSlide } from 'swiper/react';
 import { FreeMode } from 'swiper/modules';
+import LoadImage from './LoadImage';
 
 import 'swiper/css';
 import 'swiper/css/free-mode';
@@ -51,6 +52,19 @@ const DayCardRoot = styled(Stack)(({ theme }) => [
   }),
 ]);
 
+const DayCardImage = styled(LoadImage)(({ theme }) => [
+  {
+    '& .fallback__root': {
+      backgroundColor: 'var(--bg-color-3)',
+    },
+  },
+  theme.applyStyles('dark', {
+    '& .fallback__root': {
+      backgroundColor: 'var(--bg-color-4)',
+    },
+  }),
+]);
+
 const Slide = styled(SwiperSlide)({
   '&.myswiper__slide': {
     display: 'flex',
@@ -58,11 +72,11 @@ const Slide = styled(SwiperSlide)({
     justifyContent: 'center',
     width: '104px',
   },
-  '&.myswiper__slide:not(:first-child)': {
+  '&.myswiper__slide:not(:first-of-type)': {
     marginLeft: '9px !important',
     marginRight: '9px !important',
   },
-  '&.myswiper__slide:first-child': {
+  '&.myswiper__slide:first-of-type': {
     marginRight: '9px !important',
   },
 });
@@ -95,6 +109,39 @@ const Temperature = styled('span')(({ theme }) => [
   }),
 ]);
 
+const LineSVG: React.FC = () => (
+  <svg
+    width="60"
+    height="3"
+    viewBox="0 0 60 3"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <line
+      x1="8.74228e-08"
+      y1="1.5"
+      x2="60"
+      y2="1.50001"
+      stroke="url(#paint0_linear_53_926)"
+      strokeWidth="2"
+    />
+    <defs>
+      <linearGradient
+        id="paint0_linear_53_926"
+        x1="-4.37114e-08"
+        y1="3"
+        x2="60"
+        y2="3.00001"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#363636" stopOpacity="0" />
+        <stop offset="0.485" stopColor="#7E7E7E" />
+        <stop offset="1" stopColor="#363636" stopOpacity="0" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
 interface DayCardProps {
   temperature_2m_mean: number;
   time: string;
@@ -120,9 +167,21 @@ const DayCard: React.FC<DayCardProps> = ({
     <DayCardRoot justifyContent="center" alignItems="center" spacing="24px">
       <Stack alignItems="center" justifyContent="center" spacing="12px">
         <DayName>{index === 0 ? t('Today') : date.weekday}</DayName>
-        <img src="/line.svg" />
+        <LineSVG />
       </Stack>
-      <img src={`/wmo_images/${weatherStatusImg}`} height="51px" width="auto" />
+      <DayCardImage
+        src={`/wmo_images/${weatherStatusImg}`}
+        height="51px"
+        width="auto"
+        fallback={
+          <Skeleton
+            variant="circular"
+            width="51px"
+            height="51px"
+            animation="wave"
+          />
+        }
+      />
       <Temperature>{temperature_2m_mean}°C</Temperature>
     </DayCardRoot>
   );
