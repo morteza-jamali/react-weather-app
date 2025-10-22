@@ -1,5 +1,6 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, redirect } from 'react-router';
 import LoadingFallback from './components/LoadingFallback';
+import useUserInfo from './hooks/use-user-info';
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,15 @@ export const router = createBrowserRouter([
             return (await import('./pages/Dashboard')).Dashboard;
           },
         },
+        loader: async () => {
+          const { isLogedIn } = useUserInfo();
+
+          if (!isLogedIn()) {
+            throw redirect('/login');
+          }
+
+          return null;
+        },
       },
       {
         path: 'login',
@@ -25,6 +35,15 @@ export const router = createBrowserRouter([
           Component: async () => {
             return (await import('./pages/Login')).Login;
           },
+        },
+        loader: async () => {
+          const { isLogedIn } = useUserInfo();
+
+          if (isLogedIn()) {
+            throw redirect('/');
+          }
+
+          return null;
         },
       },
     ],

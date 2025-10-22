@@ -135,13 +135,6 @@ const LoginTitle = styled(Typography)(({ theme }) => [
 export const Login: React.FC = () => {
   const navigate = useNavigate();
   const userInfo = useUserInfo();
-
-  useEffect(() => {
-    if (userInfo.isLogedIn) {
-      navigate('/');
-    }
-  }, [userInfo.isLogedIn]);
-
   const { t, i18n } = useTranslation();
   const { mode } = useColorScheme();
   const [nameValue, setNameValue] = useState('');
@@ -180,7 +173,7 @@ export const Login: React.FC = () => {
     pageLoading && setPageLoading(false);
   }, []);
 
-  return !userInfo.isLogedIn ? (
+  return (
     <Root sx={mQ606Match ? { display: 'block' } : null}>
       <PageTitle title={t('login')} />
       <Stack
@@ -285,7 +278,7 @@ export const Login: React.FC = () => {
         </FormControl>
       </Stack>
     </Root>
-  ) : null;
+  );
 };
 
 export default Login;

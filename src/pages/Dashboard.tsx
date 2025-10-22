@@ -1,11 +1,9 @@
-import { useNavigate } from 'react-router';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material/styles';
 import { Box, Stack, Typography } from '@mui/material';
 import { sxWithFaFont } from '../utils/sxWithFaFont';
 import { LocationContext } from '../contexts/LocationContext';
-import useUserInfo from '../hooks/use-user-info';
 import useLocation, { type PlaceType } from '../hooks/use-location';
 import PageTitle from '../components/PageTitle';
 import SearchLocation from '../components/SearchLocation';
@@ -77,20 +75,11 @@ const Main = styled(Box)({
 });
 
 export const Dashboard: React.FC = () => {
-  const { isLogedIn } = useUserInfo();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isLogedIn) {
-      navigate('/login');
-    }
-  }, [isLogedIn]);
-
   const { t, i18n } = useTranslation();
   const { location } = useLocation();
   const locationState = useState<PlaceType | null>(location);
 
-  return isLogedIn ? (
+  return (
     <Fragment>
       <LocationContext value={locationState}>
         <PageTitle title={t('dashboard')} />
@@ -133,7 +122,7 @@ export const Dashboard: React.FC = () => {
         <Footer />
       </LocationContext>
     </Fragment>
-  ) : null;
+  );
 };
 
 export default Dashboard;
