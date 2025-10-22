@@ -13,13 +13,14 @@ import {
 import { styled, useColorScheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import { sxWithFaFont } from '../utils/sxWithFaFont';
-import { useActionState, useEffect, useRef, useState } from 'react';
+import { useActionState, useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { PageTitle } from '../components/PageTitle';
 import useUserInfo from '../hooks/use-user-info';
 import useLanguage from '../hooks/use-language';
 import LoadImage from '../components/LoadImage';
 import useWindowResize from '../hooks/use-window-resize';
+import LoadingPageContext from '../contexts/LoadingPageContext';
 
 const locales = [
   {
@@ -131,7 +132,7 @@ const LoginTitle = styled(Typography)(({ theme }) => [
   }),
 ]);
 
-export const Login = () => {
+export const Login: React.FC = () => {
   const navigate = useNavigate();
   const userInfo = useUserInfo();
 
@@ -146,6 +147,7 @@ export const Login = () => {
   const [nameValue, setNameValue] = useState('');
   const { changeLang } = useLanguage();
   const [nameValidation, setNameValidation] = useState<boolean>(false);
+  const [pageLoading, setPageLoading] = useContext(LoadingPageContext);
   const [error, formAction] = useActionState((_: any, queryData: FormData) => {
     const newName = (queryData.get('name') as string).trim();
 
@@ -154,6 +156,7 @@ export const Login = () => {
       return 'loginNameError';
     }
 
+    setPageLoading(true);
     userInfo.setName(newName);
     navigate('/');
   }, ' ');
@@ -172,6 +175,10 @@ export const Login = () => {
       setImageHeight(false);
     }
   }, [cardSize]);
+
+  useEffect(() => {
+    pageLoading && setPageLoading(false);
+  }, []);
 
   return !userInfo.isLogedIn ? (
     <Root sx={mQ606Match ? { display: 'block' } : null}>

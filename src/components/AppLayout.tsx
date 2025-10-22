@@ -10,6 +10,8 @@ import { Outlet } from 'react-router';
 import { CssBaseline } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import GlobalStyles from './GlobalStyles';
+import LoadingPageContext from '../contexts/LoadingPageContext';
+import LoadingPage from './LoadingPage';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -32,6 +34,7 @@ export const AppLayout: React.FC = () => {
   const [rtlDirection, setRtlDirection] = useState<boolean>(
     direction !== 'ltr',
   );
+  const pageLoadingState = useState<boolean>(false);
 
   useEffect(() => {
     setRtlDirection(i18n.dir() === 'rtl');
@@ -43,9 +46,12 @@ export const AppLayout: React.FC = () => {
       <ThemeProvider theme={theme} noSsr defaultMode="dark">
         <CssBaseline />
         <GlobalStyles />
-        <RTLDirectionContext value={[rtlDirection, setRtlDirection]}>
-          <Outlet />
-        </RTLDirectionContext>
+        <LoadingPageContext value={pageLoadingState}>
+          <RTLDirectionContext value={[rtlDirection, setRtlDirection]}>
+            <LoadingPage />
+            <Outlet />
+          </RTLDirectionContext>
+        </LoadingPageContext>
       </ThemeProvider>
     </CacheProvider>
   );

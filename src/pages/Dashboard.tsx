@@ -76,7 +76,7 @@ const Main = styled(Box)({
   },
 });
 
-export const Dashboard = () => {
+export const Dashboard: React.FC = () => {
   const { isLogedIn } = useUserInfo();
   const navigate = useNavigate();
 

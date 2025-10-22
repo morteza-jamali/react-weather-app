@@ -6,7 +6,7 @@ import {
   ToggleButtonGroup,
 } from '@mui/material';
 import { styled, useColorScheme } from '@mui/material/styles';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined';
 import BedtimeOutlinedIcon from '@mui/icons-material/BedtimeOutlined';
@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router';
 import { sxWithFaFont } from '../utils/sxWithFaFont';
 import useUserInfo from '../hooks/use-user-info';
 import useLanguage from '../hooks/use-language';
+import LoadingPageContext from '../contexts/LoadingPageContext';
 
 const SettingsButton = styled(Button)(({ theme }) => [
   {
@@ -117,6 +118,11 @@ export const SettingsMenu: React.FC = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [pageLoading, setPageLoading] = useContext(LoadingPageContext);
+
+  useEffect(() => {
+    pageLoading && setPageLoading(false);
+  }, []);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -127,6 +133,7 @@ export const SettingsMenu: React.FC = () => {
   };
 
   const exitHandler = () => {
+    setPageLoading(true);
     logout();
     navigate('/login');
   };
