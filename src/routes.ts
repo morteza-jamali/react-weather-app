@@ -16,7 +16,7 @@ export const router = createBrowserRouter([
         index: true,
         lazy: {
           Component: async () => {
-            return (await import('./pages/Dashboard')).Dashboard;
+            return (await import('./components/ProtectedPage')).ProtectedPage;
           },
         },
         loader: async () => {
@@ -26,14 +26,14 @@ export const router = createBrowserRouter([
             throw redirect('/login');
           }
 
-          return null;
+          return { page: 'dashboard' };
         },
       },
       {
         path: 'login',
         lazy: {
           Component: async () => {
-            return (await import('./pages/Login')).Login;
+            return (await import('./components/ProtectedPage')).ProtectedPage;
           },
         },
         loader: async () => {
@@ -43,7 +43,7 @@ export const router = createBrowserRouter([
             throw redirect('/');
           }
 
-          return null;
+          return { page: 'login' };
         },
       },
     ],
