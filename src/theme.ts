@@ -3,7 +3,7 @@ import {
   type Direction,
 } from '@mui/material/styles';
 
-export interface CreateThemeProps {
+interface CreateThemeProps {
   direction?: Direction;
 }
 

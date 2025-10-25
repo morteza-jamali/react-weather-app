@@ -7,6 +7,7 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { useEffect, useState } from 'react';
 import parseDate from '../utils/parseDate';
 import sxWithFaFont from '../utils/sxWithFaFont';
+import type { Langs } from '../types';
 
 // NOTE: Doe to a bug of stylis-plugin-rtl we should use /* @noflip */ with gradients to work on RTL direction
 // NOTE: https://github.com/styled-components/stylis-plugin-rtl/issues/36

@@ -26,6 +26,8 @@ export default defineConfig([
       'no-misleading-character-class': ['warn'],
       '@typescript-eslint/no-non-null-asserted-optional-chain': ['warn'],
       '@typescript-eslint/no-empty-object-type': ['warn'],
+      'react-hooks/rules-of-hooks': ['warn'],
+      'react-refresh/only-export-components': ['warn'],
     },
   },
 ]);

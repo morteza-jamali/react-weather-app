@@ -1,1 +1,0 @@
-type Langs = 'fa' | 'en';

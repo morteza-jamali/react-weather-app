@@ -1,3 +1,5 @@
+import type { Langs } from '../types';
+
 export const parseDate = (
   date: string | Date,
   lang: Langs = 'en',

@@ -1,7 +1,7 @@
-import { createContext } from 'react';
+import { createContext, type Dispatch, type SetStateAction } from 'react';
 
 export const LoadingPageContext = createContext<
-  [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+  [boolean, Dispatch<SetStateAction<boolean>>]
 >([false, () => {}]);
 
 export default LoadingPageContext;

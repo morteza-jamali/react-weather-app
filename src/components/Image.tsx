@@ -1,8 +1,6 @@
 import type { ComponentProps } from 'react';
 
-export interface ImageProps extends ComponentProps<'img'> {}
-
-export const Image: React.FC<ImageProps> = ({
+export const Image: React.FC<ComponentProps<'img'>> = ({
   loading = 'lazy',
   draggable = false,
   ...props

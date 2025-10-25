@@ -11,15 +11,16 @@ import { styled } from '@mui/material/styles';
 import { Fragment, useContext, useEffect, useMemo, useState } from 'react';
 import { debounce } from '@mui/material/utils';
 import _ from 'lodash';
-import { useLocation, type PlaceType } from '../hooks/use-location';
+import { useLocation } from '../hooks/use-location';
 import { LocationContext } from '../contexts/LocationContext';
 import checkTextDir from '../utils/checkTextDir';
 import sxWithFaFont from '../utils/sxWithFaFont';
 import getCacheRequest from '../utils/getCacheRequest';
+import type { PlaceType } from '../types';
 
-export interface FetchCallbackProps {
-  error?: any;
-  results?: readonly PlaceType[];
+interface FetchCallbackProps {
+  error?: Error;
+  results?: PlaceType[];
 }
 
 const fetch = debounce(
@@ -154,11 +155,9 @@ const defaultLocations: PlaceType[] = [
   },
 ];
 
-export interface SearchItemProps extends React.HTMLAttributes<HTMLLIElement> {
-  option: PlaceType;
-  isRTL: boolean;
-  selected: boolean;
-}
+export type SearchItemProps = Record<'option', PlaceType> &
+  Record<'isRTL' | 'selected', boolean> &
+  React.HTMLAttributes<HTMLLIElement>;
 
 const SearchItem: React.FC<SearchItemProps> = ({
   option,
@@ -223,9 +222,7 @@ export const SearchLocation: React.FC = () => {
     location ?? translatedDefLocations[0],
   );
   const [inputValue, setInputValue] = useState('');
-  const [options, setOptions] = useState<readonly PlaceType[]>(
-    translatedDefLocations,
-  );
+  const [options, setOptions] = useState<PlaceType[]>(translatedDefLocations);
   const [loading, setLoading] = useState(false);
   const [noOptionsText, setNoOptionsText] = useState(t('noLocation'));
   const [eventsCount, setEventsCount] = useState(0);

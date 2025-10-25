@@ -1,0 +1,125 @@
+import type { WmoCodesType } from './types';
+
+export default {
+  '0': {
+    name: 'Clear',
+    image: {
+      day: 'clear.svg',
+      night: 'clear_night.png',
+    },
+  },
+  '1': {
+    name: 'Mainly Clear',
+    image: {
+      day: 'clear.svg',
+      night: 'clear_night.png',
+    },
+  },
+  '2': {
+    name: 'Partly Cloudy',
+    image: {
+      day: 'partialy_cloudy.svg',
+      night: 'partialy_cloudy_night.png',
+    },
+  },
+  '3': {
+    name: 'Cloudy',
+    image: 'cloudy.png',
+  },
+  '45': {
+    name: 'Foggy',
+    image: 'fog.png',
+  },
+  '48': {
+    name: 'Rime Fog',
+    image: 'fog.png',
+  },
+  '51': {
+    name: 'Light Drizzle',
+    image: 'light_drizzle.svg',
+  },
+  '53': {
+    name: 'Drizzle',
+    image: 'light_drizzle.svg',
+  },
+  '55': {
+    name: 'Heavy Drizzle',
+    image: 'light_drizzle.svg',
+  },
+  '56': {
+    name: 'Light Freezing Drizzle',
+    image: 'light_drizzle.svg',
+  },
+  '57': {
+    name: 'Freezing Drizzle',
+    image: 'light_drizzle.svg',
+  },
+  '61': {
+    name: 'Light Rain',
+    image: { day: 'light_rain.png', night: 'light_rain_night.png' },
+  },
+  '63': {
+    name: 'Rain',
+    image: { day: 'light_rain.png', night: 'light_rain_night.png' },
+  },
+  '65': {
+    name: 'Heavy Rain',
+    image: { day: 'light_rain.png', night: 'light_rain_night.png' },
+  },
+  '66': {
+    name: 'Light Freezing Rain',
+    image: { day: 'light_rain.png', night: 'light_rain_night.png' },
+  },
+  '67': {
+    name: 'Freezing Rain',
+    image: { day: 'light_rain.png', night: 'light_rain_night.png' },
+  },
+  '71': {
+    name: 'Light Snow',
+    image: 'snowfall.png',
+  },
+  '73': {
+    name: 'Snow',
+    image: 'snowfall.png',
+  },
+  '75': {
+    name: 'Heavy Snow',
+    image: 'snowfall.png',
+  },
+  '77': {
+    name: 'Snow Grains',
+    image: 'snowfall.png',
+  },
+  '80': {
+    name: 'Light Rain Shower',
+    image: 'light_drizzle.svg',
+  },
+  '81': {
+    name: 'Rain Shower',
+    image: 'light_drizzle.svg',
+  },
+  '82': {
+    name: 'Heavy Rain Shower',
+    image: 'light_drizzle.svg',
+  },
+  '85': {
+    name: 'Light Snow Showers',
+    image: 'snowfall.png',
+  },
+  '86': {
+    name: 'Heavy Snow Shower',
+    image: 'snowfall.png',
+  },
+  '95': {
+    name: 'Thunderstorm',
+    image: 'thunderstorm.svg',
+  },
+  '96': {
+    name: 'Hailstorm',
+    image: 'hailstorm.png',
+  },
+  '99': {
+    name: 'Heavy Hailstorm',
+    image: 'hailstorm.png',
+  },
+} as WmoCodesType;

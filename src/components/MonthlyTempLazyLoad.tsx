@@ -3,16 +3,14 @@ import { styled } from '@mui/material/styles';
 import { Stack, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { chartsGridClasses, ChartsText, LineChart } from '@mui/x-charts';
-import {
-  calMonthlyMeanTemp,
-  type MonthlyMeanTempType,
-} from '../utils/calMonthlyMeanTemp';
+import { calMonthlyMeanTemp } from '../utils/calMonthlyMeanTemp';
+import type { MonthlyMeanTempType } from '../types';
 
-interface DataType {
-  daily: MonthlyMeanTempType;
-  latitude: number;
-  longitude: number;
-}
+type DataType = Readonly<
+  {
+    daily: MonthlyMeanTempType;
+  } & Record<'latitude' | 'longitude', number>
+>;
 
 const ChartLineGradient: React.FC = () => {
   return (

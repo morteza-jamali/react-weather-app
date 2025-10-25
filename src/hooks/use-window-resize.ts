@@ -1,10 +1,7 @@
 import { useMediaQuery } from '@mui/material';
 import { useEffect, useState, type RefObject } from 'react';
 
-interface SizeType {
-  width: number;
-  height: number;
-}
+type SizeType = Record<'width' | 'height', number>;
 
 export const useWindowResize = (query: string, ref: RefObject<any>) => {
   const [size, setSize] = useState<SizeType | null>(null);

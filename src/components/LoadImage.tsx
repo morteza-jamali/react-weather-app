@@ -9,7 +9,7 @@ import {
 import { styled } from '@mui/material/styles';
 import { Image as _Image } from './Image';
 
-export interface LoadImageProps extends Omit<ComponentProps<'img'>, 'ref'> {
+interface LoadImageProps extends Omit<ComponentProps<'img'>, 'ref'> {
   fallback?: ReactNode;
 }
 

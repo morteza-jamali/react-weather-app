@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
-export interface PageTitleProps {
+interface PageTitleProps {
   title: string;
   separator?: string;
 }

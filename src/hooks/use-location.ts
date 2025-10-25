@@ -1,15 +1,7 @@
 import { useMemo } from 'react';
+import type { PlaceType } from '../types';
 
 const Key = 'location';
-
-export interface PlaceType {
-  country: string;
-  latitude: number;
-  longitude: number;
-  name: string;
-  admin1: string;
-  admin2?: string;
-}
 
 export const useLocation = () => {
   const location: PlaceType | null = useMemo(() => {

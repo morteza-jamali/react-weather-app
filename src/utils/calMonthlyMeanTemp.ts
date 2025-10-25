@@ -1,9 +1,5 @@
+import type { MonthlyMeanTempType } from '../types';
 import parseDate from './parseDate';
-
-export interface MonthlyMeanTempType {
-  time: string[];
-  temperature_2m_mean: number[];
-}
 
 export const calMonthlyMeanTemp = (data: MonthlyMeanTempType) => {
   const monthsData: { [key: number]: number[] | number } = {};

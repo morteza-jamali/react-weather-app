@@ -3,8 +3,7 @@ import { styled } from '@mui/material/styles';
 import { Skeleton, Stack } from '@mui/material';
 import { useContext } from 'react';
 import { CurrentWeaklyWeatherContext } from '../contexts/CurrentWeaklyWeatherContext';
-import WmoCodes from '../wmo-codes.json';
-import type { WmoCodesType } from './CurrentAndWeakly';
+import WmoCodes from '../wmoCodes';
 import { useTranslation } from 'react-i18next';
 import parseDate from '../utils/parseDate';
 import { Swiper as ReactSwiper, SwiperSlide } from 'swiper/react';
@@ -142,12 +141,10 @@ const LineSVG: React.FC = () => (
   </svg>
 );
 
-interface DayCardProps {
-  temperature_2m_mean: number;
-  time: string;
-  weather_code: number;
-  index: number;
-}
+type DayCardProps = Readonly<
+  Record<'temperature_2m_mean' | 'weather_code' | 'index', number> &
+    Record<'time', string>
+>;
 
 const DayCard: React.FC<DayCardProps> = ({
   temperature_2m_mean,
@@ -157,7 +154,7 @@ const DayCard: React.FC<DayCardProps> = ({
 }) => {
   const { i18n, t } = useTranslation();
   const date = parseDate(time, i18n.language as any);
-  const weatherCodeData = (WmoCodes as WmoCodesType)[weather_code];
+  const weatherCodeData = WmoCodes[weather_code];
   const weatherStatusImg =
     typeof weatherCodeData.image === 'string'
       ? weatherCodeData.image

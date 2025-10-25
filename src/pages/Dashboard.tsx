@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import { Box, Stack, Typography } from '@mui/material';
 import { sxWithFaFont } from '../utils/sxWithFaFont';
 import { LocationContext } from '../contexts/LocationContext';
-import useLocation, { type PlaceType } from '../hooks/use-location';
+import useLocation from '../hooks/use-location';
 import PageTitle from '../components/PageTitle';
 import SearchLocation from '../components/SearchLocation';
 import SettingsMenu from '../components/SettingsMenu';
@@ -12,6 +12,7 @@ import MonthlyTemp from '../components/MonthlyTemp';
 import CurrentAndWeakly from '../components/CurrentAndWeakly';
 import Footer from '../components/Footer';
 import Image from '../components/Image';
+import type { PlaceType } from '../types';
 
 const Header = styled(Stack)(({ theme }) => [
   {

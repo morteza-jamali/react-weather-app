@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export type UseCacheRequestType = (query: string) => Promise<{
+type UseCacheRequestType = (query: string) => Promise<{
   isFromCache: boolean;
   data: any;
 }>;

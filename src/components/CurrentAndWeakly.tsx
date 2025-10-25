@@ -10,35 +10,6 @@ import { useTranslation } from 'react-i18next';
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 import { sxWithFaFont } from '../utils/sxWithFaFont';
 
-export interface WmoCodesType {
-  [key: number]: {
-    name: string;
-    image:
-      | string
-      | {
-          day: string;
-          night: string;
-        };
-  };
-}
-
-export interface CurrentWeaklyDataType {
-  current: {
-    apparent_temperature: number;
-    temperature_2m: number;
-    is_day: 0 | 1;
-    time: string;
-    weather_code: number;
-  };
-  daily: {
-    temperature_2m_max: number[];
-    temperature_2m_mean: number[];
-    temperature_2m_min: number[];
-    time: string[];
-    weather_code: number[];
-  };
-}
-
 const LazyLoad = lazy(() => import('./CurrentAndWeaklyLazyLoad'));
 
 const Loading: React.FC = () => {

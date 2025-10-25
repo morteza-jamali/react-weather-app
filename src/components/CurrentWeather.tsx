@@ -3,13 +3,13 @@ import type React from 'react';
 import { styled, useColorScheme } from '@mui/material/styles';
 import { useContext, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
-import WmoCodes from '../wmo-codes.json';
-import type { WmoCodesType } from './CurrentAndWeakly';
+import WmoCodes from '../wmoCodes';
 import checkTextDir from '../utils/checkTextDir';
 import parseDate from '../utils/parseDate';
 import LocationContext from '../contexts/LocationContext';
 import CurrentWeaklyWeatherContext from '../contexts/CurrentWeaklyWeatherContext';
 import LoadImage from './LoadImage';
+import type { Langs } from '../types';
 
 const LocationRoot = styled(Stack)({
   borderRadius: '50px',
@@ -268,9 +268,7 @@ export const CurrentWeather: React.FC = () => {
   const mQ550Match = useMediaQuery('(max-width: 550px)');
   const { t, i18n } = useTranslation();
   const data = useContext(CurrentWeaklyWeatherContext);
-  const weatherCodeData = (WmoCodes as WmoCodesType)[
-    data!.current.weather_code!
-  ];
+  const weatherCodeData = WmoCodes[data!.current.weather_code!];
   const is_dayOrNight = data?.current.is_day === 0 ? 'night' : 'day';
   const weatherStatusImg =
     typeof weatherCodeData.image === 'string'
